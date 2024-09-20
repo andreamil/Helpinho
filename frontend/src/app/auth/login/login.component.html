@@ -1,0 +1,56 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-6xl flex flex-col md:flex-row h-auto md:h-full relative">
+    <!-- Formulário de Login -->
+    <div class="w-full md:w-1/2 p-12 flex flex-col justify-center relative">
+      <!-- Logo posicionada no canto superior esquerdo do formulário -->
+      <a routerLink="/" class="absolute top-10 left-10">
+        <img src="assets/helpinho-logo.webp" alt="Helpinho Logo" class="h-10">
+      </a>
+      <div class="text-center mt-16">
+        <h2 class="text-3xl font-bold mb-6 text-gray-900">Bem vindo de volta!</h2>
+        <p class="text-gray-600 mb-6">Entre e ajude os helpinhos de hoje</p>
+      </div>
+      <form (ngSubmit)="login()">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-600 font-medium">Email</label>
+          <input type="email" id="email" [(ngModel)]="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Seu melhor email">
+        </div>
+        <div class="mb-4">
+          <label for="password" class="block text-gray-600 font-medium">Senha</label>
+          <input type="password" id="password" [(ngModel)]="password" name="password" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="********">
+        </div>
+        <div class="flex items-center justify-between mb-6">
+          <label class="flex items-center text-gray-600">
+            <input
+              type="checkbox"
+              class="mr-2"
+              [(ngModel)]="rememberMe"
+              name="rememberMe"
+            />
+            Lembrar conta
+          </label>
+          <a routerLink="/forgot-password" class="text-primary-500 hover:underline"
+            >Esqueceu senha?</a
+          >
+        </div>
+
+        <button type="submit" class="w-full bg-primary-500 text-white py-3 rounded-lg font-medium">Entrar</button>
+
+        <div class="mt-4">
+          <button (click)="loginWithGoogle()" class="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-600 py-3 rounded-lg">
+            <img src="assets/google-icon.webp" alt="Google Icon" class="h-5 w-5 mr-2"> Continuar com Google
+          </button>
+        </div>
+
+        <div class="mt-6 text-center text-gray-600">
+          <p>Ainda não faz parte do Helpinho? <a routerLink="/register" class="text-primary-500 hover:underline">Registre-se grátis</a></p>
+        </div>
+      </form>
+    </div>
+
+    <!-- Imagem lateral (só em telas grandes) -->
+    <div class="hidden md:block w-1/2 relative">
+      <img src="assets/login-image.webp" alt="Login Image" class="h-full w-full object-cover rounded-r-lg">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<!-- src/app/helpinho-step3-meta/helpinho-step3-meta.component.html -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+  <button *ngFor="let value of [100, 1000, 5000, 10000, 20000, 50000]" (click)="selectGoal(value)"
+    [ngClass]="{'border-primary-500': goal === value, 'border-gray-300': goal !== value}"
+    class="p-4 rounded-lg border transition-colors duration-300 hover:border-primary-500">
+    <p class="text-center text-xl">R$ {{value.toLocaleString('pt-BR')}}</p>
+  </button>
+</div>

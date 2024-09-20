@@ -1,0 +1,147 @@
+<div *ngIf="helpinho" class="max-w-4xl mx-auto px-4 py-8">
+  <div class="helpinho-detail bg-white p-8 rounded-lg shadow-lg">
+    <!-- Título e Criador -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <input
+          *ngIf="editMode"
+          [(ngModel)]="helpinho.title"
+          class="text-4xl font-bold text-primary-600 border-b-2 border-gray-300 w-full"
+        />
+        <h1 *ngIf="!editMode" class="text-4xl font-bold text-primary-600">{{ helpinho.title }}</h1>
+        <p class="text-gray-600 mt-2">Criado por: {{ helpinho.creatorName }}</p>
+      </div>
+
+      <div class="space-x-4">
+        <!-- Botão de editar para o criador -->
+        <button
+          *ngIf="isCreator"
+          (click)="toggleEditMode()"
+          class="px-6 py-2 rounded-full bg-primary-600 text-white"
+        >
+          {{ editMode ? 'Cancelar' : 'Editar' }}
+        </button>
+
+        <!-- Botão de seguir -->
+        <button
+          (click)="toggleFollow()"
+          class="px-6 py-2 rounded-full text-white transition duration-300"
+          [ngClass]="{
+            'bg-primary-600': !isFollowing,
+            'bg-gray-500': isFollowing
+          }"
+        >
+          {{ isFollowing ? 'Deixar de Seguir' : 'Seguir' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Imagem -->
+    <div class="mt-4">
+      <img
+        [src]="helpinho.photo"
+        alt="{{ helpinho.title }}"
+        class="rounded-lg w-full h-80 object-cover"
+      />
+    </div>
+
+    <!-- Progresso da Meta -->
+    <div class="mt-6">
+      <h2 class="text-2xl font-semibold text-gray-800">Progresso</h2>
+      <div class="mt-4">
+        <div class="relative pt-1">
+          <div class="overflow-hidden h-5 mb-4 text-xs flex rounded bg-pink-200">
+            <div
+              class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-600"
+              [style.width]="(helpinho.receivedAmount / helpinho.goal) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <p class="text-gray-800">
+            Meta: <strong>{{ helpinho.goal | currency: 'BRL' : 'symbol' }}</strong>
+          </p>
+          <p class="text-gray-800">
+            Recebido: <strong>{{ helpinho.receivedAmount | currency: 'BRL' : 'symbol' }}</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações adicionais -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label *ngIf="editMode" class="text-gray-700">Categoria</label>
+        <input
+          *ngIf="editMode"
+          [(ngModel)]="helpinho.category"
+          class="border-b-2 border-gray-300 p-2 w-full"
+        />
+        <p *ngIf="!editMode" class="text-gray-800">
+          Categoria: <strong>{{ helpinho.category }}</strong>
+        </p>
+      </div>
+
+      <div>
+        <label *ngIf="editMode" class="text-gray-700">Prazo</label>
+        <input
+          *ngIf="editMode"
+          [(ngModel)]="helpinho.deadline"
+          class="border-b-2 border-gray-300 p-2 w-full"
+          type="date"
+        />
+        <p *ngIf="!editMode" class="text-gray-800">
+          Prazo: <strong>{{ helpinho.deadline | date: 'dd/MM/yyyy' }}</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- Botão para salvar -->
+    <div *ngIf="editMode" class="mt-8 flex justify-end">
+      <button
+        (click)="saveHelpinho()"
+        class="px-6 py-3 bg-primary-600 text-white rounded-full"
+      >
+        Salvar Alterações
+      </button>
+    </div>
+
+    <!-- Seção de Doação -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold text-primary-600">Faça uma Doação</h2>
+      <div class="mt-4 flex items-center space-x-4">
+        <input
+          type="number"
+          [(ngModel)]="donationAmount"
+          placeholder="Digite o valor da doação"
+          class="p-3 border border-gray-300 rounded-lg w-1/2"
+        />
+        <button
+          (click)="makeDonation()"
+          class="px-6 py-3 bg-primary-600 text-white rounded-full transition duration-300 hover:bg-primary-700"
+        >
+          Doar
+        </button>
+      </div>
+      <p *ngIf="donationMessage" class="mt-4 text-primary-600">
+        {{ donationMessage }}
+      </p>
+    </div>
+
+        <!-- Seção de Doadores -->
+        <div class="mt-10">
+          <h2 class="text-2xl font-bold text-primary-600">Doadores</h2>
+          <p *ngIf="helpinho.donors.length === 0" class="text-gray-600 mt-2">Nenhum doador ainda. Seja o primeiro a doar!</p>
+
+          <div *ngIf="helpinho.donors.length > 0" class="mt-4 space-y-4">
+            <div *ngFor="let donor of helpinho.donors " class="bg-gray-50 p-4 rounded-lg shadow-md flex justify-between items-center">
+              <div>
+                <p class="text-lg font-semibold text-primary-600">{{ donor.donorName }}</p>
+                <p class="text-sm text-gray-600">Valor doado: {{ donor.donationAmount | currency: 'BRL' : 'symbol' }}</p>
+              </div>
+              <p class="text-lg font-semibold text-primary-600">{{ donor.donationAmount | currency: 'BRL' : 'symbol' }}</p>
+            </div>
+          </div>
+        </div>
+  </div>
+</div>

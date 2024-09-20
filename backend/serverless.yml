@@ -1,0 +1,405 @@
+org: andre01d
+app: helpinho-backend
+service: helpinho-backend
+useDotenv: true 
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: sa-east-1
+  stage: dev
+  environment:
+    DYNAMODB_TABLE_USERS: ${self:service}-users-${sls:stage}
+    DYNAMODB_TABLE_USER_FOLLOWS: ${self:service}-user-follows-${sls:stage}
+    DYNAMODB_TABLE_HELPINHOS: ${self:service}-helpinhos-${sls:stage}
+    DYNAMODB_TABLE_HELPS: ${self:service}-helps-${sls:stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    S3_IMAGE_BUCKET: ${self:service}-images-bucket-${sls:stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:BatchGetItem
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:DeleteObject
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USER_FOLLOWS}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_HELPINHOS}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_HELPINHOS}/index/*
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_HELPS}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_HELPS}/index/*
+            - arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}
+            - arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}/*
+            
+functions:
+  createUser:
+    handler: handlers/users.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+
+  getUser:
+    handler: handlers/users.get
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  createHelpinho:
+    handler: handlers/helpinhos.create
+    events:
+      - http:
+          path: helpinhos
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  getHelpinho:
+    handler: handlers/helpinhos.get
+    events:
+      - http:
+          path: helpinhos/{id}
+          method: get
+          cors: true
+
+  listHelpinhos:
+    handler: handlers/helpinhos.list
+    events:
+      - http:
+          path: helpinhos
+          method: get
+          cors: true
+  
+  createDonation:
+    handler: handlers/helps.create
+    events:
+      - http:
+          path: helps
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  
+  listUserDonations:
+    handler: handlers/helps.listByUser
+    events:
+      - http:
+          path: users/{id}/helps
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  
+  listHelpinhoDonations:
+    handler: handlers/helps.listByHelpinho
+    events:
+      - http:
+          path: helpinhos/{id}/helps
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  updateHelpinho:
+    handler: handlers/helpinhos.update
+    events:
+      - http:
+          path: helpinhos/{id}
+          method: put
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  deleteHelpinho:
+    handler: handlers/helpinhos.delete
+    events:
+      - http:
+          path: helpinhos/{id}
+          method: delete
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  listUserHelpinhos:
+    handler: handlers/helpinhos.listByUser
+    events:
+      - http:
+          path: users/{id}/helpinhos
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  cognitoCallback:
+    handler: handlers/callback.handler
+    events:
+      - http:
+          path: callback
+          method: get
+          cors: true
+
+  getUserStatistics:
+    handler: handlers/users.getStatistics
+    events:
+      - http:
+          path: users/{id}/statistics
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  followHelpinho:
+    handler: handlers/userFollows.follow
+    events:
+      - http:
+          path: helpinhos/{id}/follow
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  unfollowHelpinho:
+    handler: handlers/userFollows.unfollow
+    events:
+      - http:
+          path: helpinhos/{id}/unfollow
+          method: post
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  listFollowedHelpinhos:
+    handler: handlers/userFollows.listFollowedHelpinhos
+    events:
+      - http:
+          path: users/{id}/followed-helpinhos
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+resources:
+  Resources:
+    HelpinhoImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_IMAGE_BUCKET}
+        AccessControl: Private  
+        PublicAccessBlockConfiguration:  
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+        VersioningConfiguration:
+          Status: Enabled  
+        CorsConfiguration:  
+          CorsRules:
+            - AllowedOrigins:
+                - '*'  
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+              AllowedHeaders:
+                - '*'
+              MaxAge: 3000
+    
+    HelpinhoBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref HelpinhoImagesBucket
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal: "*"
+              Action:
+                - "s3:GetObject"
+              Resource: !Sub "arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}/*"
+
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_USERS}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    HelpinhosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_HELPINHOS}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: category
+            AttributeType: S
+          - AttributeName: title
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: receivedAmount
+            AttributeType: N
+          - AttributeName: goal  
+            AttributeType: N     
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: CategoryIndex
+            KeySchema:
+              - AttributeName: category
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: TitleIndex
+            KeySchema:
+              - AttributeName: title
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: UserIdIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ReceivedAmountIndex
+            KeySchema:
+              - AttributeName: receivedAmount
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: GoalIndex  
+            KeySchema:
+              - AttributeName: goal
+                KeyType: HASH   
+              - AttributeName: createdAt
+                KeyType: RANGE 
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+
+
+    HelpsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_HELPS}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: helpinhoId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserIdIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: HelpinhoIdIndex
+            KeySchema:
+              - AttributeName: helpinhoId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+
+    UserFollowsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_USER_FOLLOWS}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: helpinhoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: helpinhoId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+          
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: CognitoAuthorizer
+        Type: COGNITO_USER_POOLS
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - arn:aws:cognito-idp:${self:provider.region}:${aws:accountId}:userpool/${self:provider.environment.COGNITO_USER_POOL_ID}
+          
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline

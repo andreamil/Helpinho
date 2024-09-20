@@ -1,0 +1,47 @@
+<div class="relative rounded-xl shadow-lg overflow-hidden" [ngClass]="{ 'bg-white': !helpinho.isUrgent }">
+  <!-- Se for urgente, a imagem do helpinho será o fundo com overlay -->
+  <div *ngIf="helpinho.isUrgent" class="relative">
+    <img [src]="helpinho.photo" alt="Helpinho Image" class="absolute inset-0 w-full h-full object-cover z-0">
+    <div class="absolute inset-0 bg-cover bg-center z-10" style="background-image: url('assets/home-bg-1.webp'); opacity: 0.7;"></div>
+  </div>
+
+  <!-- Imagem de fundo e categoria, se não for urgente -->
+  <div *ngIf="!helpinho.isUrgent" class="relative mb-4">
+    <img [src]="helpinho.photo" alt="Helpinho Image" class="rounded-t-xl w-full h-48 object-cover">
+    <span class="absolute bottom-4 right-4 bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-semibold">{{ helpinho.category }}</span>
+  </div>
+
+  <!-- Conteúdo do card -->
+  <div class="p-6 relative z-20" [ngClass]="{ 'text-white': helpinho.isUrgent, 'bg-white': !helpinho.isUrgent }">
+    <!-- Informações do criador -->
+    <div class="flex items-center space-x-3 mb-4">
+      <img [src]="'https://via.placeholder.com/200x200'" alt="Criador do Helpinho" class="w-10 h-10 rounded-full">
+      <div>
+        <p class="font-semibold" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-900': !helpinho.isUrgent }">{{ helpinho.creatorName }}</p>
+        <p class="text-sm" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-gray-500': !helpinho.isUrgent }">{{ helpinho.creatorEmail }}</p>
+      </div>
+    </div>
+
+    <!-- Título e descrição do Helpinho -->
+    <h2 class="text-2xl font-bold mb-2" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-900': !helpinho.isUrgent }">{{ helpinho.title }}</h2>
+    <p class="mb-4" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-gray-600': !helpinho.isUrgent }">
+      {{ helpinho.description }}
+    </p>
+
+    <!-- Meta e recebimento -->
+    <p class="font-semibold" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-800': !helpinho.isUrgent }">Meta: {{ helpinho.goal | currency:'BRL':'symbol' }}</p>
+    <p class="font-semibold" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-800': !helpinho.isUrgent }">Recebido: {{ helpinho.receivedAmount | currency:'BRL':'symbol' }}</p>
+    <a [routerLink]="['/helpinho', helpinho.id]" class="mt-2 block" [ngClass]="{ 'text-white hover:underline': helpinho.isUrgent, 'text-primary-500 hover:underline': !helpinho.isUrgent }">Ver mais</a>
+
+    <!-- Indicação de urgência, aparece somente se o helpinho for urgente -->
+    <div *ngIf="helpinho.isUrgent" class="bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded-lg mb-4">
+      Helpinho urgente validado pela nossa equipe
+    </div>
+
+    <!-- Suporte visual dos doadores -->
+    <div *ngIf="helpinho.supporters" class="flex items-center space-x-2 mt-4">
+      <img *ngFor="let supporter of helpinho.supporters | slice:0:5" [src]="'https://via.placeholder.com/200x200'" alt="Suporte" class="w-8 h-8 rounded-full">
+      <span *ngIf="helpinho.supporters.length > 5" class="text-sm font-semibold" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-gray-500': !helpinho.isUrgent }">+{{ helpinho.supporters.length - 5 }}</span>
+    </div>
+  </div>
+</div>

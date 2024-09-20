@@ -1,0 +1,10 @@
+# Ignorar arquivos de ambiente
+.env
+
+# Ignorar diretório node_modules
+node_modules/
+
+# Ignorar arquivos de logs
+*.log
+
+.serverless

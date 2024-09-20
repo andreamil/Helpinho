@@ -1,0 +1,69 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-4xl font-bold text-primary-600 mb-8">Pesquisa Avançada de Helpinhos</h1>
+
+  <!-- Filtros -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <!-- Título -->
+    <div class="form-group">
+      <label class="block text-gray-700 font-medium mb-2">Título</label>
+      <input type="text" [(ngModel)]="filters.title" placeholder="Pesquisar por título" class="w-full p-3 border border-gray-300 rounded-lg" />
+    </div>
+
+    <!-- Categoria -->
+    <div class="form-group">
+      <label class="block text-gray-700 font-medium mb-2">Categoria</label>
+      <select [(ngModel)]="filters.category" class="w-full p-3 border border-gray-300 rounded-lg">
+        <option value="">Todas</option>
+        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+      </select>
+    </div>
+
+    <!-- Meta -->
+    <div class="form-group">
+      <label class="block text-gray-700 font-medium mb-2">Meta</label>
+      <div class="flex items-center">
+        <input type="number" [(ngModel)]="filters.goalMin" placeholder="Min" class="w-1/2 p-3 border border-gray-300 rounded-lg mr-2" />
+        <input type="number" [(ngModel)]="filters.goalMax" placeholder="Max" class="w-1/2 p-3 border border-gray-300 rounded-lg" />
+      </div>
+    </div>
+
+    <!-- Prazo -->
+    <div class="form-group">
+      <label class="block text-gray-700 font-medium mb-2">Prazo</label>
+      <input type="date" [(ngModel)]="filters.deadline" class="w-full p-3 border border-gray-300 rounded-lg" />
+    </div>
+  </div>
+
+  <!-- Ordenação -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Ordenar por</label>
+      <select [(ngModel)]="sortOrder" class="p-3 border border-gray-300 rounded-lg">
+        <option value="createdAt">Data de Criação</option>
+        <option value="goal">Meta</option>
+        <option value="receivedAmount">Total Recebido</option>
+      </select>
+    </div>
+    <button class="bg-primary-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-primary-600" (click)="search()">Pesquisar</button>
+  </div>
+
+  <!-- Resultados da Pesquisa -->
+  <div class="helpinhos-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ng-container *ngIf="!isLoading && helpinhos.length > 0">
+      <app-helpinho-card *ngFor="let helpinho of helpinhos" [helpinho]="helpinho"></app-helpinho-card>
+    </ng-container>
+
+    <!-- Indicador de Carregamento -->
+    <div *ngIf="isLoading" class="text-center col-span-full">
+      <div class="flex justify-center items-center space-x-2">
+        <div class="w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-gray-600">Carregando helpinhos...</p>
+      </div>
+    </div>
+
+    <!-- Nenhum resultado encontrado -->
+    <div *ngIf="!isLoading && helpinhos.length === 0" class="text-center col-span-full">
+      <p class="text-gray-600">Nenhum helpinho encontrado com os filtros aplicados.</p>
+    </div>
+  </div>
+</div>

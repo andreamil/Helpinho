@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "offline": "serverless offline start",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "andre",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "jest": "*",
+    "serverless": "*",
+    "serverless-dotenv-plugin": "*",
+    "serverless-offline": "*"
+  }
+}
