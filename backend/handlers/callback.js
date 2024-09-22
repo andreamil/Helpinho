@@ -50,6 +50,10 @@ module.exports.handler = async (event) => {
 
       return {
         statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({
           message: 'Erro ao trocar o código por tokens',
           error: error.response.data,
@@ -59,6 +63,10 @@ module.exports.handler = async (event) => {
   } else {
     return {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({
         message: 'Código de autorização não fornecido',
       }),

@@ -32,8 +32,6 @@ rememberMe: any;
       const user : any = await Auth.federatedSignIn({
         provider: CognitoHostedUIIdentityProvider.Google,
       });
-
-      this.router.navigate(['/']);
     } catch (error: any) {
       console.error('Error with Google sign in', error);
       this.toastr.error('Error with Google sign in', error.message);

@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
       }
     } catch (error: any ) {
       console.error('Erro ao verificar o usuário logado', error);
-      this.toastr.error('Erro ao verificar o usuário logado', error.message);
+      //this.toastr.error('Erro ao verificar o usuário logado', error.message);
     }
   }
 }

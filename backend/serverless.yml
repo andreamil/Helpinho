@@ -13,7 +13,7 @@ provider:
   environment:
     DYNAMODB_TABLE_USERS: ${self:service}-users-${sls:stage}
     DYNAMODB_TABLE_USER_FOLLOWS: ${self:service}-user-follows-${sls:stage}
-    DYNAMODB_TABLE_HELPINHOS: ${self:service}-helpinhos-${sls:stage}
+    DYNAMODB_TABLE_HELPINHOS: ${self:service}-helpinhos2-${sls:stage}
     DYNAMODB_TABLE_HELPS: ${self:service}-helps-${sls:stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
     COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
@@ -34,6 +34,7 @@ provider:
             - s3:GetObject
             - s3:ListBucket
             - s3:DeleteObject
+            - cognito-idp:AdminGetUser
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USER_FOLLOWS}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS}
@@ -43,6 +44,7 @@ provider:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_HELPS}/index/*
             - arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}
             - arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}/*
+            - arn:aws:cognito-idp:${self:provider.region}:*:userpool/${self:provider.environment.COGNITO_USER_POOL_ID}
             
 functions:
   createUser:
@@ -59,6 +61,18 @@ functions:
       - http:
           path: users/{id}
           method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+              
+  uploadPhoto:
+    handler: handlers/users.uploadPhoto
+    events:
+      - http:
+          path: users/uploadPhoto
+          method: post
           cors: true
           authorizer:
             type: COGNITO_USER_POOLS
@@ -277,10 +291,8 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: category
-            AttributeType: S
-          - AttributeName: title
-            AttributeType: S
+          - AttributeName: deleted
+            AttributeType: N
           - AttributeName: createdAt
             AttributeType: S
           - AttributeName: userId
@@ -293,17 +305,9 @@ resources:
           - AttributeName: id
             KeyType: HASH
         GlobalSecondaryIndexes:
-          - IndexName: CategoryIndex
+          - IndexName: DeletedIndex
             KeySchema:
-              - AttributeName: category
-                KeyType: HASH
-              - AttributeName: createdAt
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-          - IndexName: TitleIndex
-            KeySchema:
-              - AttributeName: title
+              - AttributeName: deleted
                 KeyType: HASH
               - AttributeName: createdAt
                 KeyType: RANGE
@@ -317,24 +321,23 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-          - IndexName: ReceivedAmountIndex
+          - IndexName: ReceivedAmountSortIndex
             KeySchema:
-              - AttributeName: receivedAmount
+              - AttributeName: deleted
                 KeyType: HASH
-              - AttributeName: createdAt
+              - AttributeName: receivedAmount
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-          - IndexName: GoalIndex  
+          - IndexName: GoalSortIndex  
             KeySchema:
+              - AttributeName: deleted
+                KeyType: HASH
               - AttributeName: goal
-                KeyType: HASH   
-              - AttributeName: createdAt
-                KeyType: RANGE 
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-
 
     HelpsTable:
       Type: AWS::DynamoDB::Table
@@ -385,9 +388,7 @@ resources:
             KeyType: HASH
           - AttributeName: helpinhoId
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
           
     ApiGatewayAuthorizer:
       Type: AWS::ApiGateway::Authorizer

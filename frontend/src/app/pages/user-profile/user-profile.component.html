@@ -1,5 +1,4 @@
 <div class="max-w-5xl mx-auto py-12 px-4">
-  <!-- Header -->
   <div class="flex justify-between items-center mb-10">
     <h1 class="text-4xl font-bold text-primary-600">Minha Conta</h1>
     <button (click)="editMode = !editMode" class="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700">
@@ -7,7 +6,6 @@
     </button>
   </div>
 
-  <!-- User Info Section -->
   <div class="bg-white p-8 rounded-lg shadow-md">
     <div class="flex items-center space-x-6">
       <div class="relative">
@@ -21,12 +19,10 @@
       </div>
 
       <div class="flex-1">
-        <!-- Nome -->
         <div class="mb-4">
           <label class="block text-gray-700 font-medium">Nome</label>
           <input [disabled]="!editMode" [(ngModel)]="user.name" class="p-3 border border-gray-300 rounded-lg w-full">
         </div>
-        <!-- Email (não editável) -->
         <div>
           <label class="block text-gray-700 font-medium">Email</label>
           <input disabled [(ngModel)]="user.email" class="p-3 border border-gray-300 rounded-lg w-full bg-gray-100">
@@ -34,22 +30,19 @@
       </div>
     </div>
 
-    <!-- CPF -->
     <div class="mt-6">
       <label class="block text-gray-700 font-medium">CPF</label>
-      <input [disabled]="!editMode" [(ngModel)]="user.cpf" (input)="formatCpf()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="000.000.000-00">
+      <input [disabled]="!editMode" [(ngModel)]="user.cpf" (input)="applyCpfMask()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="000.000.000-00" required minlength="11">
     </div>
 
-    <!-- Telefone -->
     <div class="mt-6">
       <label class="block text-gray-700 font-medium">Telefone</label>
-      <input [disabled]="!editMode" [(ngModel)]="user.phone" (input)="formatPhone()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="(00) 90000-0000">
+      <input [disabled]="!editMode" [(ngModel)]="user.phone" (input)="applyPhoneMask()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="(00) 90000-0000" required minlength="11">
     </div>
 
-    <!-- Data de Nascimento -->
     <div class="mt-6">
       <label class="block text-gray-700 font-medium">Data de Nascimento</label>
-      <input [disabled]="!editMode" [(ngModel)]="user.birthdate" (input)="formatBirthdate()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="dd/mm/aaaa">
+      <input [disabled]="!editMode" [(ngModel)]="user.birthdate" (input)="applyDobMask()" class="p-3 border border-gray-300 rounded-lg w-full" placeholder="dd/mm/aaaa" required minlength="8" maxlength="10">
     </div>
 
     <div class="mt-6 text-right" *ngIf="editMode">
@@ -59,58 +52,86 @@
     </div>
   </div>
 
-  <!-- User Statistics -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-bold text-primary-600">Total Doado</h2>
-      <p class="text-gray-700 text-2xl font-bold mt-2">{{ totalDonated | currency: 'BRL' }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-bold text-primary-600">Helpinhos Criados</h2>
-      <p class="text-gray-700 text-2xl font-bold mt-2">{{ createdHelpinhos.length }}</p>
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-bold text-primary-600">Helpinhos Seguidos</h2>
-      <p class="text-gray-700 text-2xl font-bold mt-2">{{ followedHelpinhos.length }}</p>
-    </div>
+    <ng-container *ngIf="isLoadingUserStats; else statisticsLoaded">
+      <div class="bg-gray-200 animate-pulse p-6 rounded-lg"></div>
+      <div class="bg-gray-200 animate-pulse p-6 rounded-lg"></div>
+      <div class="bg-gray-200 animate-pulse p-6 rounded-lg"></div>
+    </ng-container>
+
+    <ng-template #statisticsLoaded>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 class="text-xl font-bold text-primary-600">Total Doado</h2>
+        <p class="text-gray-700 text-2xl font-bold mt-2">{{ totalDonated | currency: 'BRL' }}</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 class="text-xl font-bold text-primary-600">Helpinhos Criados</h2>
+        <p class="text-gray-700 text-2xl font-bold mt-2">{{ createdCount }}</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 class="text-xl font-bold text-primary-600">Helpinhos Seguidos</h2>
+        <p class="text-gray-700 text-2xl font-bold mt-2">{{ trackingCount }}</p>
+      </div>
+    </ng-template>
   </div>
 
-  <!-- Add Helpinho Button -->
   <div class="mt-10 flex justify-end">
     <button routerLink="/helpinho/create" class="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700">
       Adicionar Helpinho
     </button>
   </div>
-
-  <!-- Created Helpinhos Section -->
   <div class="mt-10">
     <h2 class="text-3xl font-bold text-primary-600">Helpinhos Criados</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      <div *ngFor="let helpinho of createdHelpinhos" class="bg-white p-4 rounded-lg shadow-md">
-        <img [src]="helpinho.photo" alt="{{ helpinho.title }}" class="w-full h-32 object-cover rounded-md mb-4">
-        <h3 class="text-xl font-semibold text-gray-800">{{ helpinho.title }}</h3>
-        <p class="text-gray-600">{{ helpinho.description | slice: 0:100 }}...</p>
-        <div class="mt-4 flex justify-between items-center">
-          <p class="text-gray-700 font-bold">{{ helpinho.goal | currency: 'BRL' }}</p>
-          <a [routerLink]="['/helpinho', helpinho.id]" class="text-primary-600 hover:underline">Ver mais</a>
-        </div>
+    <ng-container *ngIf="createdHelpinhos.length === 0 && !isLoadingHelpinhos; else loadingOrHelpinhos">
+      <p class="text-neutral-700 mt-4">Você ainda não criou nenhum helpinho.</p>
+    </ng-container>
+
+    <ng-template #loadingOrHelpinhos>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <ng-container *ngIf="isLoadingHelpinhos; else createdHelpinhosLoaded">
+          <div *ngFor="let skeleton of [1, 2, 3]" class="bg-gray-200 animate-pulse h-48 rounded-lg"></div>
+        </ng-container>
+
+        <ng-template #createdHelpinhosLoaded>
+          <div *ngFor="let helpinho of createdHelpinhos" class="bg-white p-4 rounded-lg shadow-md">
+            <img [src]="helpinho.photo" alt="{{ helpinho.title }}" class="w-full h-32 object-cover rounded-md mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{ helpinho.title }}</h3>
+            <p class="text-neutral-700">{{ helpinho.description | slice: 0:100 }}...</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-gray-700 font-bold">{{ helpinho.goal | currency: 'BRL' }}</p>
+              <a [routerLink]="['/helpinho', helpinho.id]" class="text-primary-600 hover:underline">Ver mais</a>
+            </div>
+          </div>
+        </ng-template>
       </div>
-    </div>
+    </ng-template>
   </div>
 
-  <!-- Followed Helpinhos Section -->
   <div class="mt-10">
     <h2 class="text-3xl font-bold text-primary-600">Helpinhos Seguidos</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-      <div *ngFor="let helpinho of followedHelpinhos" class="bg-white p-4 rounded-lg shadow-md">
-        <img [src]="helpinho.photo" alt="{{ helpinho.title }}" class="w-full h-32 object-cover rounded-md mb-4">
-        <h3 class="text-xl font-semibold text-gray-800">{{ helpinho.title }}</h3>
-        <p class="text-gray-600">{{ helpinho.description | slice: 0:100 }}...</p>
-        <div class="mt-4 flex justify-between items-center">
-          <p class="text-gray-700 font-bold">{{ helpinho.goal | currency: 'BRL' }}</p>
-          <a [routerLink]="['/helpinho', helpinho.id]" class="text-primary-600 hover:underline">Ver mais</a>
-        </div>
+    <ng-container *ngIf="followedHelpinhos.length === 0 && !isLoadingFollowedHelpinhos; else loadingOrFollowedHelpinhos">
+      <p class="text-neutral-700 mt-4">Você ainda não segue nenhum helpinho.</p>
+    </ng-container>
+
+    <ng-template #loadingOrFollowedHelpinhos>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <ng-container *ngIf="isLoadingFollowedHelpinhos; else followedHelpinhosLoaded">
+          <div *ngFor="let skeleton of [1, 2, 3]" class="bg-gray-200 animate-pulse h-48 rounded-lg"></div>
+        </ng-container>
+
+        <ng-template #followedHelpinhosLoaded>
+          <div *ngFor="let helpinho of followedHelpinhos" class="bg-white p-4 rounded-lg shadow-md">
+            <img [src]="helpinho.photo" alt="{{ helpinho.title }}" class="w-full h-32 object-cover rounded-md mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{ helpinho.title }}</h3>
+            <p class="text-neutral-700">{{ helpinho.description | slice: 0:100 }}...</p>
+            <div class="mt-4 flex justify-between items-center">
+              <p class="text-gray-700 font-bold">{{ helpinho.goal | currency: 'BRL' }}</p>
+              <a [routerLink]="['/helpinho', helpinho.id]" class="text-primary-600 hover:underline">Ver mais</a>
+            </div>
+          </div>
+        </ng-template>
       </div>
-    </div>
+    </ng-template>
   </div>
+
 </div>

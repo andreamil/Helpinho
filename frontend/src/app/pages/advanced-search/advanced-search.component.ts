@@ -10,23 +10,34 @@ export class AdvancedSearchComponent implements OnInit {
   helpinhos: Helpinho[] = [];
   isLoading: boolean = false;
 
-
   filters = {
     category: '',
     goalMin: null,
     goalMax: null,
     deadline: null,
     title: '',
-    description: ''
+    description: '',
+    limit: 30,
+    customCategory:''
   };
 
-
-  sortOrder: string = 'createdAt';
+  sortOrder: string = 'createdAt_desc';
 
   categories: string[] = [
     'Saúde', 'Educação', 'Meio Ambiente', 'Esportes', 'Cultura',
     'Animais', 'Assistência Social', 'Tecnologia', 'Arte e Cultura'
   ];
+  showCustomCategoryInput = false;
+
+  onCategoryChange(event: any) {
+    if (event.target.value === 'other') {
+      this.showCustomCategoryInput = true;
+      this.filters.category = '';
+    } else {
+      this.showCustomCategoryInput = false;
+      this.filters.customCategory = '';
+    }
+  }
 
   constructor(private helpinhoService: HelpinhoService) {}
 
@@ -35,15 +46,20 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   search(): void {
+    const searchFilters = {
+      ...this.filters,
+      category: this.filters.customCategory || this.filters.category
+    };
     this.isLoading = true;
 
     const searchParams = {
-      category: this.filters.category,
+      category: this.filters.customCategory || this.filters.category,
       goalMin: this.filters.goalMin,
       goalMax: this.filters.goalMax,
       deadline: this.filters.deadline,
       title: this.filters.title,
       sortOrder: this.sortOrder,
+      limit: this.filters.limit || 10
     };
 
     this.helpinhoService.getHelpinhosWithFilters(searchParams).subscribe(
@@ -57,4 +73,5 @@ export class AdvancedSearchComponent implements OnInit {
       }
     );
   }
+
 }

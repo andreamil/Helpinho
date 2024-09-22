@@ -7,13 +7,16 @@ AWS.config.update({ region: 'sa-east-1' });
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const { v4: uuidv4 } = require('uuid');
 
-module.exports.create = async (event) => {
-  
+module.exports.create = async (event) => {  
   const user = event.requestContext.authorizer.claims;
 
   if (!user) {
     return {
       statusCode: 403,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Não autenticado' }),
     };
   }
@@ -27,6 +30,10 @@ module.exports.create = async (event) => {
   if (!helpinhoId || !amount) {
     return {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Campos obrigatórios faltando: helpinhoId ou amount' }),
     };
   }
@@ -42,6 +49,10 @@ module.exports.create = async (event) => {
     if (!helpinhoResult.Item) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({ message: 'Helpinho não encontrado' }),
       };
     }
@@ -89,10 +100,15 @@ module.exports.create = async (event) => {
     console.error('Erro ao realizar doação:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Erro ao realizar doação', error }),
     };
   }
 };
+
 module.exports.listByUser = async (event) => {
   const { id } = event.pathParameters;
 
@@ -122,6 +138,10 @@ module.exports.listByUser = async (event) => {
     console.error('Erro ao listar doações do usuário:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Erro ao listar doações', error }),
     };
   }
@@ -156,6 +176,10 @@ module.exports.listByHelpinho = async (event) => {
     console.error('Erro ao listar doações do helpinho:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Erro ao listar doações', error }),
     };
   }

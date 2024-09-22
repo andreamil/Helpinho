@@ -1,22 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
 import { RouterModule } from '@angular/router';
-
 
 import { PagesComponent } from './pages.component';
 import { HomeComponent } from './home/home.component';
 import { HelpinhoComponent } from './helpinho/helpinho.component';
 import { FollowedHelpinhosComponent } from './followed-helpinhos/followed-helpinhos.component';
 
-
 import { HeaderComponent } from '../components/header/header.component';
 import { FooterComponent } from '../components/footer/footer.component';
 
-
 import { FormsModule } from '@angular/forms';
-
 
 import { PagesRoutingModule } from './pages-routing.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';

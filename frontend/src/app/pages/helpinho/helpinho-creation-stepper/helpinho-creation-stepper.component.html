@@ -1,53 +1,51 @@
-<!-- Fundo transparente com bordas arredondadas e header fora -->
 <div class="min-h-screen flex flex-col items-center py-8" style="background-color: #f9fafb; margin-top: -6rem;">
-  <!-- Header do Stepper -->
   <div class="flex justify-center items-center space-x-4 py-6 px-6 rounded-3xl border border-neutral-100 shadow-lg bg-transparent mt-20">
     <div class="flex items-center space-x-4" *ngFor="let step of steps; let i = index">
-      <!-- Step Icon com sombra, ícones menores e arredondamento reduzido -->
-      <di v class="relative flex items-center justify-center h-14 w-14 rounded-full  transition-colors duration-200"
-           [ngClass]="{
-             'bg-primary-500 text-white shadow-lg': i === currentStep,
-             'bg-neutral-50 text-gray-400': i !== currentStep
-           }">
+      <div class="relative flex items-center justify-center h-14 w-14 rounded-full transition-colors duration-200"
+           [ngClass]="{ 'bg-primary-500 text-white shadow-lg': i === currentStep, 'bg-neutral-50 text-gray-400': i !== currentStep }">
         <img *ngIf="i !== currentStep" [src]="'assets/icons/' + step.icon + '-gray.svg'" alt="{{step.label}}" class="w-8 h-8">
         <img *ngIf="i === currentStep" [src]="'assets/icons/' + step.icon + '-white.svg'" alt="{{step.label}}" class="w-8 h-8">
-      </di>
-
-      <!-- Step Label com texto maior -->
+      </div>
       <div *ngIf="i === currentStep" class="flex flex-col">
-        <span class="text-primary-500 font-bold text-sm	leading-5">Passo {{ i + 1 }}/{{ steps.length }}</span>
+        <span class="text-primary-500 font-bold text-sm leading-5">Passo {{ i + 1 }}/{{ steps.length }}</span>
         <span class="text-neutral-800 font-normal text-lg leading-5">{{ step.label }}</span>
       </div>
-
-      <!-- Divider vertical com largura e arredondamento reduzidos -->
       <div *ngIf="i < steps.length - 1" class="w-0.5 h-10 bg-neutral-200"></div>
     </div>
   </div>
 
-  <!-- Conteúdo do Stepper -->
   <div class="bg-white w-full max-w-5xl mt-10 rounded-lg shadow-lg p-10">
     <ng-container *ngIf="currentStep === 0">
-      <app-helpinho-step1-categoria [(category)]="helpinhoData.category"></app-helpinho-step1-categoria>
+      <app-helpinho-step1-categoria [(category)]="helpinhoData.category" [showCategoryError]="showCategoryError"></app-helpinho-step1-categoria>
     </ng-container>
     <ng-container *ngIf="currentStep === 1">
       <app-helpinho-step2-detalhes
         [(title)]="helpinhoData.title"
         [(description)]="helpinhoData.description"
+        [(photoBase64)]="helpinhoData.photoBase64"
         (imageFileSelected)="onImageFileSelected($event)"
-      ></app-helpinho-step2-detalhes>
+        [showDetailsError]="showDetailsError"></app-helpinho-step2-detalhes>
     </ng-container>
     <ng-container *ngIf="currentStep === 2">
-      <app-helpinho-step3-meta [(goal)]="helpinhoData.goal"></app-helpinho-step3-meta>
+      <app-helpinho-step3-meta
+        [(goal)]="helpinhoData.goal"
+        [(customGoal)]="helpinhoData.customGoal"
+        [(deadline)]="helpinhoData.deadline"
+        [(bankInfo)]="helpinhoData.bankInfo"
+        [showGoalError]="showGoalError"
+        [showDeadlineError]="showDeadlineError"></app-helpinho-step3-meta>
     </ng-container>
     <ng-container *ngIf="currentStep === 3">
       <app-helpinho-step4-revisao [helpinhoData]="helpinhoData"></app-helpinho-step4-revisao>
     </ng-container>
   </div>
 
-  <!-- Botões de navegação -->
   <div class="flex justify-end space-x-4 items-center py-6 px-8 w-full max-w-5xl">
     <button *ngIf="currentStep > 0" (click)="previousStep()" class="bg-white border border-neutral-300 text-neutral-700 font-semibold px-6 py-3 rounded-xl text-lg">Voltar</button>
     <button *ngIf="currentStep < 3" (click)="nextStep()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg">Continuar</button>
-    <button *ngIf="currentStep === 3" (click)="publishHelpinho()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg">Publicar Helpinho</button>
+    <button *ngIf="currentStep === 3" (click)="publishHelpinho()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg flex items-center" [disabled]="isLoading">
+      Publicar Helpinho
+      <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+    </button>
   </div>
 </div>

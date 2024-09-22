@@ -10,6 +10,10 @@ module.exports.follow = async (event) => {
   if (!user) {
     return {
       statusCode: 403,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Não autenticado' }),
     };
   }
@@ -40,12 +44,20 @@ module.exports.follow = async (event) => {
     if (error.code === 'ConditionalCheckFailedException') {
       return {
         statusCode: 409,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({ message: 'Você já está seguindo este helpinho' }),
       };
     }
     console.error('Erro ao seguir helpinho:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({ message: 'Erro ao seguir helpinho', error }),
     };
   }
@@ -58,6 +70,10 @@ module.exports.unfollow = async (event) => {
     if (!user) {
       return {
         statusCode: 403,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({ message: 'Não autenticado' }),
       };
     }
@@ -86,79 +102,90 @@ module.exports.unfollow = async (event) => {
       console.error('Erro ao deixar de seguir helpinho:', error);
       return {
         statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({ message: 'Erro ao deixar de seguir helpinho', error }),
       };
     }
-  };
-  
-  module.exports.listFollowedHelpinhos = async (event) => {
-    const user = event.requestContext.authorizer.claims;
-  
-    if (!user) {
-      return {
-        statusCode: 403,
-        body: JSON.stringify({ message: 'Não autenticado' }),
-      };
-    }
-  
-    const userId = user.sub;
-  
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_USER_FOLLOWS,
-      KeyConditionExpression: 'userId = :userId',
-      ExpressionAttributeValues: {
-        ':userId': userId,
+};
+
+module.exports.listFollowedHelpinhos = async (event) => {
+  const user = event.requestContext.authorizer.claims;
+
+  if (!user) {
+    return {
+      statusCode: 403,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
+      body: JSON.stringify({ message: 'Não autenticado' }),
     };
-  
-    try {
-      const result = await dynamoDb.query(params).promise();
-      const helpinhoIds = result.Items.map((item) => item.helpinhoId);
-  
-      if (helpinhoIds.length === 0) {
-        return {
-          statusCode: 200,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': true,
-          },
-          body: JSON.stringify({ items: [] }),
-        };
-      }
-  
-      
-      const helpinhoTable = process.env.DYNAMODB_TABLE_HELPINHOS;
-  
-      const batchGetParams = {
-        RequestItems: {
-          [helpinhoTable]: {
-            Keys: helpinhoIds.map((id) => ({ id })),
-          },
-        },
-      };
-  
-      const batchResult = await dynamoDb.batchGet(batchGetParams).promise();
-      const helpinhos = batchResult.Responses[helpinhoTable].filter(
-        (item) => !item.deleted
-      );
-  
-      
-      helpinhos.forEach((item) => delete item.bankInfo);
-  
+  }
+
+  const userId = user.sub;
+
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE_USER_FOLLOWS,
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': userId,
+    },
+  };
+
+  try {
+    const result = await dynamoDb.query(params).promise();
+    const helpinhoIds = result.Items.map((item) => item.helpinhoId);
+
+    if (helpinhoIds.length === 0) {
       return {
         statusCode: 200,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': true,
         },
-        body: JSON.stringify({ items: helpinhos }),
-      };
-    } catch (error) {
-      console.error('Erro ao listar helpinhos seguidos:', error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Erro ao listar helpinhos seguidos', error }),
+        body: JSON.stringify({ items: [] }),
       };
     }
-  };
-  
+
+    const helpinhoTable = process.env.DYNAMODB_TABLE_HELPINHOS;
+
+    const batchGetParams = {
+      RequestItems: {
+        [helpinhoTable]: {
+          Keys: helpinhoIds.map((id) => ({ id })),
+        },
+      },
+    };
+
+    const batchResult = await dynamoDb.batchGet(batchGetParams).promise();
+    
+    const helpinhos = batchResult.Responses[helpinhoTable].filter(
+      (item) => item.deleted === 0
+    );
+
+    helpinhos.forEach((item) => delete item.bankInfo);
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ items: helpinhos }),
+    };
+  } catch (error) {
+    console.error('Erro ao listar helpinhos seguidos:', error);
+    return {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ message: 'Erro ao listar helpinhos seguidos', error }),
+    };
+  }
+};
+

@@ -17,7 +17,6 @@ const routes: Routes = [
     component: PagesComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'home', component: HomeComponent },
       { path: 'pesquisa', component: AdvancedSearchComponent },
       { path: 'me', component: UserProfileComponent, canActivate: [AuthGuard] },
       {

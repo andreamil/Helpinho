@@ -1,9 +1,12 @@
-<!-- src/app/helpinho-step1-categoria/helpinho-step1-categoria.component.html -->
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 text-center">
   <button *ngFor="let cat of categories" (click)="selectCategory(cat)"
     [ngClass]="{'border-primary-500': category === cat, 'border-gray-300': category !== cat}"
     class="p-6 rounded-2xl border-2 transition-all duration-300 hover:border-primary-500 flex flex-col items-center justify-center">
-    <img [src]="'assets/icons/' + cat + '.svg'" alt="{{cat}}" class="w-12 h-12 mb-2">
+    <img [src]="'assets/icons/' + cat + '.svg'" alt="{{cat}}" class="w-12 h-12 mb-2" onerror="this.style.display='none'">
     <p class="text-xl font-medium">{{cat}}</p>
   </button>
+</div>
+
+<div *ngIf="showCategoryError" class="mt-4 text-red-500 text-center">
+  Selecione uma categoria para continuar.
 </div>

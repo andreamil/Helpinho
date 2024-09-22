@@ -30,10 +30,7 @@ export class HomeComponent implements OnInit {
   totalDonated: string|number = 0;
   helpinhosAjudados: any = 0;
 
-  categories: string[] = [
-    'Saúde', 'Educação', 'Meio Ambiente', 'Esportes', 'Cultura',
-    'Animais', 'Assistência Social', 'Tecnologia', 'Arte e Cultura'
-  ];
+  categories = ['Jogos', 'Saúde', 'Música', 'Reforma', 'Emergência', 'Hospitalar', 'Educação', 'Meio Ambiente', 'Esportes', 'Cultura', 'Animais', 'Assistência Social', 'Tecnologia', 'Arte e Cultura'];
 
   isLoadingUserStats = true;
   isLoadingHelpinhos = false;
@@ -109,6 +106,9 @@ export class HomeComponent implements OnInit {
           this.helpinhos = [...this.helpinhos, ...data];
 
           this.isLoadingHelpinhos = false;
+          if(this.helpinhos.length < this.limit && this.hasMore){
+            this.loadHelpinhos()
+          }
         },
         (error) => {
           console.error('Erro ao buscar helpinhos', error);
@@ -127,19 +127,13 @@ export class HomeComponent implements OnInit {
   }
 
   onSearchChanged(term: string): void {
-
     this.searchTerm = term.toLowerCase();
     this.resetHelpinhos();
   }
 
-
   onFilterChange(event: any): void {
+    this.lastEvaluatedKey = null;
     this.filters = { ...this.filters, category: event.target.value };
-    this.resetHelpinhos();
-  }
-
-  onSortChange(event: any): void {
-    //this.sort = event.target.value;
     this.resetHelpinhos();
   }
 

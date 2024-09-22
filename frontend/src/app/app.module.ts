@@ -20,7 +20,6 @@ import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform
 import { ToastrModule } from 'ngx-toastr';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +35,10 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     NgxSpinnerModule,
     BrowserAnimationsModule,
     NoopAnimationsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      preventDuplicates: true,
+    }),
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

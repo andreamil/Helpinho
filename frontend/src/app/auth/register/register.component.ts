@@ -36,9 +36,25 @@ export class RegisterComponent implements OnInit {
         this.email = user.attributes.email;
         this.isGoogleUser = true;
         this.cpf = user.attributes['custom:cpf'];
-        this.dob = user.attributes['birthdate'];
-        this.phone = user.attributes['phone_number'];
+
+        const birthdate = user.attributes['birthdate'];
+        if (birthdate && /^\d{4}-\d{2}-\d{2}$/.test(birthdate)) {
+          const [year, month, day] = birthdate.split('-');
+          this.dob = `${day}/${month}/${year}`;
+        } else {
+          this.dob = birthdate;
+        }
+
+        const phone = user.attributes['phone_number'];
+        if (phone && phone.startsWith('+55') && phone.length === 14) {
+          this.phone = `(${phone.slice(3, 5)}) ${phone.slice(5, 11)}-${phone.slice(11)}`;
+        }
+
         this.userPhotoUrl = user.attributes.picture || 'assets/default-avatar.webp';
+
+        this.applyCpfMask();
+        this.applyPhoneMask();
+        this.applyDobMask();
       }
     } catch (error) {
       console.error('Erro ao obter usuário autenticado', error);
@@ -64,7 +80,6 @@ export class RegisterComponent implements OnInit {
     if (this.dob.length > 2) this.dob = this.dob.replace(/(\d{2})(\d)/, '$1/$2');
     if (this.dob.length > 5) this.dob = this.dob.replace(/(\d{2})(\d)/, '$1/$2');
   }
-
 
   formatPhoneForStorage() {
     return `+55${this.phone.replace(/\D/g, '')}`;

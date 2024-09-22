@@ -1,12 +1,9 @@
-<!-- Fundo rosa cobrindo toda a tela -->
-<div class="bg-primary-100 w-full py-8" style="background-image: url('assets/home-bg-1.webp'); background-size: cover; background-repeat: no-repeat; margin-top: -6rem;">
+<div class="bg-primary-100 w-full py-8" style="background-image: url('assets/home-bg-1.webp'); background-size: cover; background-repeat: round; margin-top: -6rem;">
   <div class="container mx-auto px-4 mt-20">
 
-    <!-- Conteúdo para o usuário NÃO logado -->
     <div *ngIf="!isLoggedIn" class="flex flex-col lg:flex-row py-12 px-6 space-y-6 lg:space-y-0 lg:space-x-6">
-      <div class="hero-text text-center lg:text-left max-w-4xl">
-        <!-- Badges de recursos -->
-        <div class="flex flex-col space-y-2 mb-6 sm:flex-row sm:space-y-0 sm:space-x-4 bg-white/40 p-4 rounded-full shadow-sm w-fit mx-auto lg:mx-0">
+      <div class="hero-text text-left max-w-4xl">
+        <div class="flex mb-6 flex-row space-y-0 space-x-4 bg-white/40 p-4 rounded-full shadow-sm w-fit lg:mx-0">
           <span class="text-primary-500 text-lg flex items-center">
             <img src="assets/check-icon.webp" alt="Check" class="w-5 h-5 mr-2" />
             Registro grátis
@@ -15,53 +12,45 @@
             <img src="assets/check-icon.webp" alt="Check" class="w-5 h-5 mr-2" />
             Sem taxas
           </span>
-          <span class="text-primary-500 text-lg flex items-center">
+          <span class="text-primary-500 text-lg flex items-center hidden sm:flex">
             <img src="assets/check-icon.webp" alt="Check" class="w-5 h-5 mr-2" />
             Rápido e prático
           </span>
         </div>
 
-        <!-- Texto do Hero -->
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-light text-gray-900 leading-tight">
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-light text-neutral-800 leading-tight">
           Faça a diferença com apenas
           <span class="text-primary-500 font-bold">um helpinho</span>
         </h2>
 
-        <h2 class="text-md sm:text-lg lg:text-xl text-gray-700 mt-4">
+        <h2 class="text-md sm:text-lg lg:text-xl text-neutral-600 font-normal mt-4">
           Os helpinho podem parecer pequenos, mas juntos fazem a
           <span class="text-primary-500 font-bold">diferença na vida de todos</span>.
         </h2>
 
-        <!-- Botão de Registro -->
-        <button class="mt-8 bg-primary-500 text-white text-lg font-semibold px-6 py-2 rounded-2xl shadow-md hover:bg-primary-700 transition duration-300" routerLink="/register">
+        <button class="mt-8 bg-primary-500 text-white text-lg font-normal px-7 py-2 sm:py-4 rounded-2xl shadow-md hover:bg-primary-700 transition duration-300" routerLink="/register">
           Registre-se grátis
         </button>
       </div>
 
-      <!-- Imagem do Hero -->
       <div class="hero-image mt-8 lg:mt-0 lg:ml-8 max-w-xs sm:max-w-2xl w-full">
         <img src="assets/pessoas.webp" alt="Personas" class="rounded-md w-full" />
       </div>
     </div>
 
-    <!-- Conteúdo para o usuário LOGADO -->
     <div *ngIf="isLoggedIn" class="welcome-section flex flex-col md:flex-row items-center justify-between py-12 px-6">
-      <!-- Loading de estatísticas -->
       <div *ngIf="isLoadingUserStats" class="text-center">
-        <!-- Indicador de carregamento de estatísticas do usuário -->
-        <p class="text-gray-600">Carregando suas estatísticas...</p>
+        <p class="text-neutral-700">Carregando suas estatísticas...</p>
       </div>
 
-      <!-- Estatísticas carregadas -->
       <div *ngIf="!isLoadingUserStats" class="welcome-text text-center md:text-left">
-        <h1 class="text-4xl font-light text-gray-900">
+        <h1 class="text-4xl font-light text-neutral-900">
           Olá <span class="text-5xl ml-1 font-bold text-neutral-800">{{ userName }}</span>
         </h1>
         <h1 class="text-2xl text-neutral-600 mt-4">
-          Vamos dá um <span class="text-primary-500 font-bold">helpinho</span> hoje? Separamos uma seleção especial para você.
+          Vamos dar um <span class="text-primary-500 font-bold">helpinho</span> hoje? Separamos uma seleção especial para você.
         </h1>
 
-        <!-- Estatísticas de acompanhamento e criação de helpinhos -->
         <div class="mt-6 bg-pink-50 px-10 py-4 rounded-3xl inline-block">
           <div class="flex flex-row space-y-0 space-x-8 text-lg">
             <div class="text-left">
@@ -76,16 +65,14 @@
         </div>
       </div>
 
-      <!-- Gráfico de doações -->
       <div class="mt-8 md:mt-0">
         <div class="relative w-64 h-64">
-          <!-- Gráfico customizado ou imagem de substituição -->
           <img src="assets/donation-chart.webp" alt="Total Doado" class="">
           <div class="absolute inset-0 flex flex-col justify-center items-center text-center">
-            <p class="text-sm text-gray-700">Você já doou</p>
+            <p class="text-sm text-neutral-700">Você já doou</p>
             <p class="text-primary-500 text-4xl font-bold">{{ totalDonated | currency:'BRL' }}</p>
             <p class="text-primary-500 text-4xl font-bold mt-10">{{ helpinhosAjudados }}</p>
-            <p class="text-sm text-gray-700">Helpinhos ajudados</p>
+            <p class="text-sm text-neutral-700">Helpinhos ajudados</p>
           </div>
         </div>
       </div>
@@ -93,78 +80,98 @@
   </div>
 </div>
 
-<!-- Seção dos passos -->
 <div class="container mx-auto mt-16 py-8 px-4 lg:px-12">
   <section class="steps-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-    <!-- Step 1 -->
     <div class="step flex flex-row items-start space-x-4">
       <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">1.</span>
       <div>
         <p class="font-bold text-primary-900 text-lg">Escolha</p>
-        <p class="text-gray-600 text-base">Escolha um helpinho que deseja ajudar</p>
+        <p class="text-neutral-700 text-base">Escolha um helpinho que deseja ajudar</p>
       </div>
     </div>
-    <!-- Step 2 -->
     <div class="step flex flex-row items-start space-x-4">
       <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">2.</span>
       <div>
         <p class="font-bold text-primary-900 text-lg">Doe</p>
-        <p class="text-gray-600 text-base">O valor é você quem decide, e ele vai <span class="text-primary-500 font-bold">todo</span> para quem escolher</p>
+        <p class="text-neutral-700 text-base">O valor é você quem decide, e ele vai <span class="text-primary-500 font-bold">todo</span> para quem escolher</p>
       </div>
     </div>
-    <!-- Step 3 -->
     <div class="step flex flex-row items-start space-x-4">
       <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">3.</span>
       <div>
         <p class="font-bold text-primary-900 text-lg">Aproveite</p>
-        <p class="text-gray-600 text-base">Doar gera felicidade para você e para quem recebeu.</p>
+        <p class="text-neutral-700 text-base">Doar gera felicidade para você e para quem recebeu.</p>
       </div>
     </div>
-    <!-- Step 4 -->
     <div class="step flex flex-row items-start space-x-4">
       <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">4.</span>
       <div>
         <p class="font-bold text-primary-900 text-lg">Acompanhe</p>
-        <p class="text-gray-600 text-base">Fique ligado, acompanhe se o helpinho alcançou o objetivo</p>
+        <p class="text-neutral-700 text-base">Fique ligado, acompanhe se o helpinho alcançou o objetivo</p>
       </div>
     </div>
   </section>
 </div>
 
-<!-- Barra de Pesquisa e Filtro -->
 <div class="container mx-auto px-4 py-8">
   <div class="mt-12 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-    <input
-      type="text"
-      placeholder="Quem vamos ajudar hoje?"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearch($event)"
-      class="w-full p-4 border border-gray-300 rounded-lg shadow-md"
-    />
 
-    <select (change)="onFilterChange($event)" class="sm:ml-4 w-full sm:w-auto p-4 border border-gray-300 rounded-lg shadow-md">
-      <option value="">Escolha uma categoria</option>
+    <label class="search-label w-full h-full">
+      <input
+        type="text"
+        placeholder="Quem vamos ajudar hoje?"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch($event)"
+        class="w-full h-full p-5 pl-12 border border-neutral-300 rounded-lg shadow-md placeholder-neutral-500 search-input"
+      />
+    </label>
+    <select (change)="onFilterChange($event)" class="category-select sm:ml-4 w-full h-full sm:w-auto p-5 pr-10 border border-neutral-300 rounded-lg shadow-md" [class.text-neutral-500]="!filters.category">
+      <option value="" class="text-neutral-500">Escolha uma categoria</option>
       <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
     </select>
   </div>
 
-  <!-- Lista de Helpinhos -->
   <div infiniteScroll (scrolled)="onScroll()" class="helpinhos-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-    <ng-container *ngIf="!isLoadingHelpinhos">
+    <ng-container *ngIf="!isLoadingHelpinhos || helpinhos.length > 0">
       <app-helpinho-card *ngFor="let helpinho of helpinhos" [helpinho]="helpinho"></app-helpinho-card>
     </ng-container>
+    <ng-container *ngIf="isLoadingHelpinhos">
+      <div *ngFor="let skeleton of [1, 2, 3]" >
+        <div class="h-48 bg-neutral-300 rounded-t-xl w-full object-cover"></div>
+        <div class="relative rounded-xl shadow-lg bg-white p-6 animate-pulse" >
+          <div class="flex items-center space-x-3 my-4">
+            <div class="w-12 h-12 bg-neutral-300 rounded-full"></div>
+            <div class="space-y-2">
+              <div class="h-4 bg-neutral-300 rounded w-24"></div>
+              <div class="h-4 bg-neutral-200 rounded w-16"></div>
+            </div>
+          </div>
 
-    <!-- Indicador de carregamento de Helpinhos -->
-    <div *ngIf="isLoadingHelpinhos" class="col-span-full text-center">
-      <div class="flex justify-center items-center space-x-2">
-        <div class="w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-gray-600">Carregando helpinhos...</p>
+          <div class="h-4 bg-neutral-300 rounded mb-2 w-3/4"></div>
+
+          <div class="h-3 bg-neutral-200 rounded mb-2 w-full"></div>
+          <div class="h-3 bg-neutral-200 rounded mb-2 w-5/6"></div>
+
+          <div class="mt-4">
+            <div class="relative pt-1">
+              <div class="overflow-hidden h-3 mb-2 text-xs flex rounded bg-neutral-300">
+                <div class="bg-neutral-400 w-1/3"></div>
+              </div>
+              <div class="flex justify-between text-sm text-neutral-400">
+                <span>Recebido: --</span>
+                <span>Meta: --</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 text-sm bg-neutral-200 h-4 w-2/3 rounded"></div>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 
-  <!-- Mensagem de fim de lista -->
   <div *ngIf="!hasMore && !isLoadingHelpinhos" class="text-center my-8">
-    <p class="text-gray-600">Não há mais helpinhos para carregar.</p>
+    <p class="text-neutral-700">Não há mais helpinhos para carregar.</p>
   </div>
+
 </div>

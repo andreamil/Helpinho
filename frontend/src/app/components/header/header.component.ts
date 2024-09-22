@@ -31,7 +31,6 @@ export class HeaderComponent implements OnInit {
 
       this.userAvatar = user.attributes.picture || 'assets/user-avatar.png';
 
-
       if (user?.attributes?.identities) {
         const provider = JSON.parse(user.attributes.identities)[0].providerName;
         this.isGoogleLogin = provider === 'Google' || provider === 'google'
@@ -42,14 +41,12 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-
   async logout(): Promise<void> {
     try {
       await Auth.signOut();
 
       this.isLoggedIn = false;
       this.userName = null;
-
 
       if (!this.isGoogleLogin) {
         window.location.reload();
