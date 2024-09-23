@@ -1,202 +1,218 @@
-<div *ngIf="isLoading; else loaded" class="max-w-4xl mx-auto px-4 py-8">
-  <div class="helpinho-detail bg-white p-8 rounded-lg shadow-lg">
-    <div class="animate-pulse">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div class="w-full md:w-auto">
-          <div class="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
-          <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+@if (isLoading) {
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="helpinho-detail bg-white p-8 rounded-lg shadow-lg">
+      <div class="animate-pulse">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div class="w-full md:w-auto">
+            <div class="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+          <div class="space-x-4 mt-4 md:mt-0 flex">
+            <div class="h-8 bg-gray-300 rounded w-24"></div>
+            <div class="h-8 bg-gray-300 rounded w-24"></div>
+          </div>
         </div>
-        <div class="space-x-4 mt-4 md:mt-0 flex">
-          <div class="h-8 bg-gray-300 rounded w-24"></div>
-          <div class="h-8 bg-gray-300 rounded w-24"></div>
+        <div class="mt-4">
+          <div class="h-80 bg-gray-300 rounded-lg w-full"></div>
         </div>
-      </div>
-
-      <div class="mt-4">
-        <div class="h-80 bg-gray-300 rounded-lg w-full"></div>
-      </div>
-
-      <div class="mt-6">
-        <div class="h-6 bg-gray-300 rounded w-1/3 mb-4"></div>
-        <div class="h-4 bg-gray-200 rounded w-full"></div>
-        <div class="h-4 bg-gray-200 rounded w-3/4 mt-2"></div>
-      </div>
-
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="h-8 bg-gray-200 rounded w-full"></div>
-        <div class="h-8 bg-gray-200 rounded w-full"></div>
+        <div class="mt-6">
+          <div class="h-6 bg-gray-300 rounded w-1/3 mb-4"></div>
+          <div class="h-4 bg-gray-200 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-3/4 mt-2"></div>
+        </div>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="h-8 bg-gray-200 rounded w-full"></div>
+          <div class="h-8 bg-gray-200 rounded w-full"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-<ng-template #loaded>
+} @else {
   <div class="max-w-4xl mx-auto px-4 py-8">
     <div class="helpinho-detail bg-white p-8 rounded-lg shadow-lg">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div class="w-full md:w-auto">
-          <input
-            *ngIf="editMode"
-            [(ngModel)]="helpinho.title"
-            class="text-2xl md:text-4xl font-bold text-primary-600 border-b-2 border-gray-300 w-full"
-          />
-          <h1 *ngIf="!editMode" class="text-2xl md:text-4xl font-bold text-primary-600">{{ helpinho.title }}</h1>
+          @if (editMode) {
+            <input
+              [(ngModel)]="helpinho.title"
+              class="text-2xl md:text-4xl font-bold text-primary-600 border-b-2 border-gray-300 w-full"
+              />
+          }
+          @if (!editMode) {
+            <h1 class="text-2xl md:text-4xl font-bold text-primary-600">{{ helpinho.title }}</h1>
+          }
           <p class="text-neutral-700 mt-2">
             Criado por: {{ helpinho.creator.name }} (<span class="text-gray-500">{{ helpinho.creator.email }}</span>)
           </p>
         </div>
-
         <div class="space-x-4 mt-4 md:mt-0 flex self-end">
-          <button
-            *ngIf="isCreator"
-            (click)="toggleEditMode()"
-            class="px-6 py-2 rounded-full bg-primary-600 text-white flex items-center"
-            [disabled]="isLoading"
-          >
-            {{ editMode ? 'Cancelar' : 'Editar' }}
-            <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
-          </button>
-
-          <button
-            *ngIf="!isCreator"
-            (click)="toggleFollow()"
-            class="px-6 py-2 rounded-full text-white transition duration-300 flex items-center"
-            [ngClass]="{ 'bg-primary-600': !isFollowing, 'bg-gray-500': isFollowing }"
-            [disabled]="isLoading"
-          >
-            {{ isFollowing ? 'Deixar de Seguir' : 'Seguir' }}
-            <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
-          </button>
-
-          <button
-            *ngIf="isCreator"
-            (click)="deleteHelpinho()"
-            class="px-6 py-2 rounded-full bg-red-600 text-white flex items-center"
-            [disabled]="isLoading"
-          >
-            Deletar
-            <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
-          </button>
+          @if (isCreator) {
+            <button
+              (click)="toggleEditMode()"
+              class="px-6 py-2 rounded-lg bg-primary-600 text-white flex items-center"
+              [disabled]="isLoading"
+              >
+              {{ editMode ? 'Cancelar' : 'Editar' }}
+              @if (isLoading) {
+                <span class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+              }
+            </button>
+          }
+          @if (!isCreator) {
+            <button
+              (click)="toggleFollow()"
+              class="px-6 py-2 rounded-lg text-white transition duration-300 flex items-center"
+              [ngClass]="{ 'bg-primary-600': !isFollowing, 'bg-gray-500': isFollowing }"
+              [disabled]="isLoading"
+              >
+              {{ isFollowing ? 'Deixar de Seguir' : 'Seguir' }}
+              @if (isLoading) {
+                <span class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+              }
+            </button>
+          }
+          @if (isCreator) {
+            <button
+              (click)="deleteHelpinho()"
+              class="px-6 py-2 rounded-lg bg-red-600 text-white flex items-center"
+              [disabled]="isLoading"
+              >
+              Deletar
+              @if (isLoading) {
+                <span class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+              }
+            </button>
+          }
         </div>
       </div>
-
       <div class="mt-4">
         <img
           [src]="helpinho.photo"
           alt="{{ helpinho.title }}"
           class="rounded-lg w-full h-80 object-cover"
-        />
-      </div>
-
-      <div class="mt-6">
-        <h2 class="text-2xl font-semibold text-gray-800">Descrição</h2>
-        <p class="mt-2 text-gray-700">{{ helpinho.description }}</p>
-      </div>
-
-      <div class="mt-6">
-        <h2 class="text-2xl font-semibold text-gray-800">Progresso</h2>
-        <div class="mt-4">
-          <div class="relative pt-1">
-            <div class="overflow-hidden h-5 mb-4 text-xs flex rounded bg-pink-200">
-              <div
-                class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-600"
-                [style.width]="(helpinho.receivedAmount / helpinho.goal) * 100 + '%'"
-              ></div>
+          />
+        </div>
+        <div class="mt-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Descrição</h2>
+          <p class="mt-2 text-gray-700">{{ helpinho.description }}</p>
+        </div>
+        <div class="mt-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Progresso</h2>
+          <div class="mt-4">
+            <div class="relative pt-1">
+              <div class="overflow-hidden h-5 mb-4 text-xs flex rounded bg-pink-200">
+                <div
+                  class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-600"
+                  [style.width]="(helpinho.receivedAmount / helpinho.goal) * 100 + '%'"
+                ></div>
+              </div>
             </div>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-gray-800">
-              Recebido: <strong>{{ helpinho.receivedAmount | currency: 'BRL' : 'symbol' }}</strong>
-            </p>
-            <p class="text-gray-800">
-              Meta: <strong>{{ helpinho.goal | currency: 'BRL' : 'symbol' }}</strong>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label *ngIf="editMode" class="text-gray-700">Categoria</label>
-          <input
-            *ngIf="editMode"
-            [(ngModel)]="helpinho.category"
-            class="border-b-2 border-gray-300 p-2 w-full"
-          />
-          <p *ngIf="!editMode" class="text-gray-800">
-            Categoria: <strong>{{ helpinho.category }}</strong>
-          </p>
-        </div>
-
-        <div>
-          <label *ngIf="editMode" class="text-gray-700">Prazo</label>
-          <input
-            *ngIf="editMode"
-            [(ngModel)]="helpinho.deadline"
-            class="border-b-2 border-gray-300 p-2 w-full"
-            type="date"
-          />
-          <p *ngIf="!editMode" class="text-gray-800">
-            Prazo: <strong>{{ helpinho.deadline | date: 'dd/MM/yyyy' }}</strong>
-          </p>
-        </div>
-      </div>
-
-      <div *ngIf="editMode" class="mt-8 flex justify-end">
-        <button
-          (click)="saveHelpinho()"
-          class="px-6 py-3 bg-primary-600 text-white rounded-full flex items-center"
-          [disabled]="isLoading"
-        >
-          Salvar Alterações
-          <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
-        </button>
-      </div>
-
-      <div class="mt-8 text-center">
-        <h2 class="text-2xl font-bold text-primary-600">Faça uma Doação</h2>
-        <div class="mt-4 flex flex-col items-center space-y-4">
-          <input
-            type="number"
-            [(ngModel)]="donationAmount"
-            placeholder="Digite o valor da doação"
-            class="p-3 border border-gray-300 rounded-lg w-full md:w-1/2 text-center"
-          />
-          <button
-            (click)="makeDonation()"
-            class="px-6 py-3 bg-primary-600 text-white rounded-full w-full md:w-auto transition duration-300 hover:bg-primary-700"
-          >
-            Doar
-          </button>
-        </div>
-        <p *ngIf="donationMessage" class="mt-4 text-primary-600">
-          {{ donationMessage }}
-        </p>
-      </div>
-
-      <div class="mt-10">
-        <h2 class="text-2xl font-bold text-primary-600">Doadores</h2>
-        <p *ngIf="helpinho.donors.length === 0" class="text-neutral-700 mt-2">Nenhum doador ainda. Seja o primeiro a doar!</p>
-
-        <div *ngIf="helpinho.donors.length > 0" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div *ngFor="let donor of helpinho.donors" class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
-            <div class="flex flex-col items-center text-center">
-              <img [src]="donor.photo" alt="Donor photo" class="w-16 h-16 rounded-full mb-3 object-cover">
-
-              <div class="mb-2">
-                <p class="text-lg font-semibold text-primary-600">{{ donor.name }}</p>
-                <p class="text-sm text-gray-500">{{ donor.email }}</p>
-              </div>
-
-              <div class="bg-primary-100 text-primary-600 font-bold px-4 py-2 rounded-full">
-                {{ donor.donationAmount | currency: 'BRL' : 'symbol' }}
-              </div>
+            <div class="flex justify-between">
+              <p class="text-gray-800">
+                Recebido: <strong>{{ helpinho.receivedAmount | currency: 'BRL' : 'symbol' }}</strong>
+              </p>
+              <p class="text-gray-800">
+                Meta: <strong>{{ helpinho.goal | currency: 'BRL' : 'symbol' }}</strong>
+              </p>
             </div>
           </div>
         </div>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            @if (editMode) {
+              <label class="text-gray-700">Categoria</label>
+            }
+            @if (editMode) {
+              <input
+                [(ngModel)]="helpinho.category"
+                class="border-b-2 border-gray-300 p-2 w-full"
+                />
+            }
+            @if (!editMode) {
+              <p class="text-gray-800">
+                Categoria: <strong>{{ helpinho.category }}</strong>
+              </p>
+            }
+          </div>
+          <div>
+            @if (editMode) {
+              <label class="text-gray-700">Prazo</label>
+            }
+            @if (editMode) {
+              <input
+                [(ngModel)]="helpinho.deadline"
+                class="border-b-2 border-gray-300 p-2 w-full"
+                type="date"
+                />
+            }
+            @if (!editMode) {
+              <p class="text-gray-800">
+                Prazo: <strong>{{ helpinho.deadline | date: 'dd/MM/yyyy' }}</strong>
+              </p>
+            }
+          </div>
+        </div>
+        @if (editMode) {
+          <div class="mt-8 flex justify-end">
+            <button
+              (click)="saveHelpinho()"
+              class="px-6 py-3 bg-primary-600 text-white rounded-lg flex items-center"
+              [disabled]="isLoading"
+              >
+              Salvar Alterações
+              @if (isLoading) {
+                <span class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+              }
+            </button>
+          </div>
+        }
+        <div class="mt-8 text-center">
+          <h2 class="text-2xl font-bold text-primary-600">Faça uma Doação</h2>
+          <div class="mt-4 flex flex-col items-center space-y-4">
+            <input
+              type="number"
+              [(ngModel)]="donationAmount"
+              placeholder="Digite o valor da doação"
+              class="p-3 border border-gray-300 rounded-lg w-full md:w-1/2 text-center"
+              />
+              <button
+                (click)="makeDonation()"
+                class="px-6 py-3 bg-primary-600 text-white rounded-lg w-full md:w-auto transition duration-300 hover:bg-primary-700"
+                >
+                Doar
+              </button>
+            </div>
+            @if (donationMessage) {
+              <p class="mt-4 text-primary-600">
+                {{ donationMessage }}
+              </p>
+            }
+          </div>
+          <div class="mt-10">
+            <h2 class="text-2xl font-bold text-primary-600">Doadores</h2>
+            @if (helpinho.donors.length === 0) {
+              <p class="text-neutral-700 mt-2">Nenhum doador ainda. Seja o primeiro a doar!</p>
+            }
+            @if (helpinho.donors.length > 0) {
+              <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @for (donor of helpinho.donors; track donor) {
+                  <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                    <div class="flex flex-col items-center text-center">
+                      <img [src]="donor.photo" alt="Donor photo" class="w-16 h-16 rounded-full mb-3 object-cover">
+                      <div class="mb-2">
+                        <p class="text-lg font-semibold text-primary-600">{{ donor.name }}</p>
+                        <p class="text-sm text-gray-500">{{ donor.email }}</p>
+                      </div>
+                      <div class="bg-primary-100 text-primary-600 font-bold px-4 py-2 rounded-full">
+                        {{ donor.donationAmount | currency: 'BRL' : 'symbol' }}
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
       </div>
+    }
 
-    </div>
-  </div>
-
-</ng-template>

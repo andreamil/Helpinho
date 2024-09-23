@@ -1,8 +1,10 @@
 <div class="followed-helpinhos">
   <h1>Helpinhos que Você Está Seguindo</h1>
-  <div *ngFor="let helpinho of helpinhos" class="helpinho-card">
-    <h2>{{ helpinho.title }}</h2>
-    <p>{{ helpinho.description | slice: 0:100 }}...</p>
-    <a [routerLink]="['/helpinho', helpinho.id]">Ver mais</a>
-  </div>
+  @for (helpinho of helpinhos; track helpinho) {
+    <div class="helpinho-card">
+      <h2>{{ helpinho.title }}</h2>
+      <p>{{ helpinho.description | slice: 0:100 }}...</p>
+      <a [routerLink]="['/helpinho', helpinho.id]">Ver mais</a>
+    </div>
+  }
 </div>

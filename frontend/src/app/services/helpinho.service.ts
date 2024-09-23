@@ -23,6 +23,7 @@ export interface Helpinho {
     email: string;
   };
   donors: Donor[];
+  donorsCount: number;
 }
 export interface Donor {
   id: string;
@@ -50,15 +51,22 @@ export class HelpinhoService {
     return user.attributes.sub;
   }
 
-  getHelpinhos(
+  getHelpinhos(data : {
     limit: number,
     lastEvaluatedKey?: string | null,
     searchTerm?: string,
     filters?: any,
-    sort?: string
-  ): Observable<any> {
+    sort?: string,
+    donorsLimit?: number
+  }): Observable<any> {
+
+    const { limit, lastEvaluatedKey, searchTerm, filters, sort, donorsLimit} = data
+
     let params = new HttpParams().set('limit', limit.toString());
 
+    if (donorsLimit) {
+      params = params.set('donorsLimit', donorsLimit);
+    }
     if (lastEvaluatedKey) {
       params = params.set('lastEvaluatedKey', lastEvaluatedKey);
     }

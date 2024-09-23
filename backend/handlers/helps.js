@@ -1,7 +1,3 @@
-'use strict';
-
-require('dotenv').config();
-
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'sa-east-1' });
 const dynamoDb = new AWS.DynamoDB.DocumentClient();

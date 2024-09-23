@@ -8,34 +8,42 @@
       (ngModelChange)="onTitleChange($event)"
       class="w-full p-4 border border-gray-300 rounded-lg"
       placeholder="Seu título aqui"
-    />
-    <p *ngIf="showDetailsError && title.trim() === ''" class="text-red-500 text-sm">Título é obrigatório.</p>
-  </div>
-
-  <div>
-    <label for="image" class="block text-gray-700 font-medium mb-2">Imagem do Helpinho</label>
-    <div class="border-dashed border-2 border-gray-300 p-8 flex flex-col items-center justify-center rounded-lg cursor-pointer"
-         (click)="imageInput.click()">
-      <input type="file" id="image" #imageInput (change)="onFileSelected($event)" class="hidden">
-      <ng-container *ngIf="!photoBase64">
-        <img src="assets/upload-icon.svg" class="w-12 mb-2" alt="Upload icon">
-        <p class="text-neutral-700 text-center">Selecione ou arraste uma foto para representar seu helpinho</p>
-      </ng-container>
-      <img *ngIf="photoBase64" [src]="photoBase64" class="w-40 h-40 object-cover rounded-md mt-4">
+      />
+      @if (showDetailsError && title.trim() === '') {
+        <p class="text-red-500 text-sm">Título é obrigatório.</p>
+      }
     </div>
-    <p *ngIf="showDetailsError && !photoBase64" class="text-red-500 text-sm">Imagem é obrigatória.</p>
-  </div>
 
-  <div>
-    <label for="description" class="block text-gray-700 font-medium mb-2">*Descrição</label>
-    <textarea
-      id="description"
-      [(ngModel)]="description"
-      (ngModelChange)="onDescriptionChange($event)"
-      rows="6"
-      class="w-full p-4 border border-gray-300 rounded-lg"
-      placeholder="Escreva a descrição do seu helpinho, não economize nas palavras"
-    ></textarea>
-    <p *ngIf="showDetailsError && description.trim() === ''" class="text-red-500 text-sm">Descrição é obrigatória.</p>
+    <div>
+      <label for="image" class="block text-gray-700 font-medium mb-2">Imagem do Helpinho</label>
+      <div class="border-dashed border-2 border-gray-300 p-8 flex flex-col items-center justify-center rounded-lg cursor-pointer"
+        (click)="imageInput.click()">
+        <input type="file" id="image" #imageInput (change)="onFileSelected($event)" class="hidden">
+        @if (!photoBase64) {
+          <img src="assets/upload-icon.svg" class="w-12 mb-2" alt="Upload icon">
+          <p class="text-neutral-700 text-center">Selecione ou arraste uma foto para representar seu helpinho</p>
+        }
+        @if (photoBase64) {
+          <img [src]="photoBase64" class="w-40 h-40 object-cover rounded-md mt-4">
+        }
+      </div>
+      @if (showDetailsError && !photoBase64) {
+        <p class="text-red-500 text-sm">Imagem é obrigatória.</p>
+      }
+    </div>
+
+    <div>
+      <label for="description" class="block text-gray-700 font-medium mb-2">*Descrição</label>
+      <textarea
+        id="description"
+        [(ngModel)]="description"
+        (ngModelChange)="onDescriptionChange($event)"
+        rows="6"
+        class="w-full p-4 border border-gray-300 rounded-lg"
+        placeholder="Escreva a descrição do seu helpinho, não economize nas palavras"
+      ></textarea>
+      @if (showDetailsError && description.trim() === '') {
+        <p class="text-red-500 text-sm">Descrição é obrigatória.</p>
+      }
+    </div>
   </div>
-</div>

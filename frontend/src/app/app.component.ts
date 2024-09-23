@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  title: any = 'frontend';
 
   constructor(private router: Router, private toastr: ToastrService) {}
 

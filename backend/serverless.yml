@@ -35,6 +35,7 @@ provider:
             - s3:ListBucket
             - s3:DeleteObject
             - cognito-idp:AdminGetUser
+            - cognito-idp:AdminUpdateUserAttributes
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USER_FOLLOWS}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS}
@@ -66,7 +67,7 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-              
+
   uploadPhoto:
     handler: handlers/users.uploadPhoto
     events:

@@ -5,89 +5,99 @@
         <img src="assets/helpinho-logo.webp" alt="Helpinho Logo" class="h-10">
       </a>
 
-      <div *ngIf="!registrationComplete">
-        <div class="text-left mt-16">
-          <p class="text-3xl font-semibold mb-6 text-neutral-900">Registre-se grátis</p>
-          <p class="text-neutral-700 mb-6">
-            {{ user ? 'Finalize seu cadastro' : 'Seja bem-vindo! Estamos felizes em tê-lo na nossa rede de apoio' }}
-          </p>
-
-          <div class="mb-6">
-            <img [src]="userPhotoUrl" alt="Foto do Usuário" class="w-24 h-24 rounded-full mx-auto object-cover">
-          </div>
-        </div>
-
-        <form (ngSubmit)="register()" #registerForm="ngForm">
-        <div class="mb-4">
-          <label for="name" class="block text-neutral-700 font-medium mb-1">Nome*</label>
-          <input type="text" id="name" [(ngModel)]="name" name="name" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="Como podemos lhe chamar" [readonly]="isGoogleUser" [disabled]="isGoogleUser" required>
-        </div>
-
-        <div class="mb-4">
-          <label for="email" class="block text-neutral-700 font-medium mb-1">Email*</label>
-          <input type="email" id="email" [(ngModel)]="email" name="email" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="Escreva seu melhor email" [readonly]="isGoogleUser" [disabled]="isGoogleUser" required email>
-          <div *ngIf="registerForm.controls['email']?.dirty && registerForm.controls['email']?.invalid" class="text-red-600">
-            Email inválido.
-          </div>
-        </div>
-
-        <div class="mb-4 flex space-x-4">
-          <div class="w-1/2">
-            <label for="cpf" class="block text-neutral-700 font-medium mb-1">CPF/CNPJ*</label>
-            <input type="text" id="cpf" [(ngModel)]="cpf" name="cpf" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="000.000.000-00" (input)="applyCpfMask()" required minlength="11">
-            <div *ngIf="registerForm.controls['cpf']?.dirty && registerForm.controls['cpf']?.invalid" class="text-red-600">
-              CPF inválido.
+      @if (!registrationComplete) {
+        <div>
+          <div class="text-left mt-16">
+            <p class="text-3xl font-semibold mb-6 text-neutral-900">Registre-se grátis</p>
+            <p class="text-neutral-700 mb-6">
+              {{ user ? 'Finalize seu cadastro' : 'Seja bem-vindo! Estamos felizes em tê-lo na nossa rede de apoio' }}
+            </p>
+            <div class="mb-6">
+              <img [src]="userPhotoUrl" alt="Foto do Usuário" class="w-24 h-24 rounded-full mx-auto object-cover">
             </div>
           </div>
-          <div class="w-1/2">
-            <label for="dob" class="block text-neutral-700 font-medium mb-1">Data de nascimento*</label>
-            <input type="text" id="dob" [(ngModel)]="dob" name="dob" class="w-full p-3 border border-neutral-300 rounded-lg" pplaceholder="dd/mm/aaaa" (input)="applyDobMask()" required minlength="8" maxlength="10">
-            <div *ngIf="registerForm.controls['dob']?.dirty && registerForm.controls['dob']?.invalid" class="text-red-600">
-              Data de nascimento inválida.
+          <form (ngSubmit)="register()" #registerForm="ngForm">
+            <div class="mb-4">
+              <label for="name" class="block text-neutral-700 font-medium mb-1">Nome*</label>
+              <input type="text" id="name" [(ngModel)]="name" name="name" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="Como podemos lhe chamar" [readonly]="isGoogleUser" [disabled]="isGoogleUser" required>
             </div>
-          </div>
+            <div class="mb-4">
+              <label for="email" class="block text-neutral-700 font-medium mb-1">Email*</label>
+              <input type="email" id="email" [(ngModel)]="email" name="email" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="Escreva seu melhor email" [readonly]="isGoogleUser" [disabled]="isGoogleUser" required email>
+              @if (registerForm.controls['email'].dirty && registerForm.controls['email'].invalid) {
+                <div class="text-red-600">
+                  Email inválido.
+                </div>
+              }
+            </div>
+            <div class="mb-4 flex space-x-4">
+              <div class="w-1/2">
+                <label for="cpf" class="block text-neutral-700 font-medium mb-1">CPF/CNPJ*</label>
+                <input type="text" id="cpf" [(ngModel)]="cpf" name="cpf" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="000.000.000-00" (input)="applyCpfMask()" required minlength="11">
+                @if (registerForm.controls['cpf'].dirty && registerForm.controls['cpf'].invalid) {
+                  <div class="text-red-600">
+                    CPF inválido.
+                  </div>
+                }
+              </div>
+              <div class="w-1/2">
+                <label for="dob" class="block text-neutral-700 font-medium mb-1">Data de nascimento*</label>
+                <input type="text" id="dob" [(ngModel)]="dob" name="dob" class="w-full p-3 border border-neutral-300 rounded-lg" pplaceholder="dd/mm/aaaa" (input)="applyDobMask()" required minlength="8" maxlength="10">
+                @if (registerForm.controls['dob'].dirty && registerForm.controls['dob'].invalid) {
+                  <div class="text-red-600">
+                    Data de nascimento inválida.
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="phone" class="block text-neutral-700 font-medium mb-1">Telefone*</label>
+              <input type="tel" id="phone" [(ngModel)]="phone" name="phone" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="(00) 90000-0000" (input)="applyPhoneMask()" required minlength="11">
+              @if (registerForm.controls['phone'].dirty && registerForm.controls['phone'].invalid) {
+                <div class="text-red-600">
+                  Telefone inválido.
+                </div>
+              }
+            </div>
+            @if (!isGoogleUser) {
+              <div class="mb-4">
+                <label for="password" class="block text-neutral-700 font-medium mb-1">Senha*</label>
+                <input type="password" id="password" [(ngModel)]="password" name="password" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="No mínimo 8 caracteres, letras e número" [disabled]="isGoogleUser" required minlength="8" pattern="^(?=.*[A-Za-z])(?=.*\d).+$">
+                @if (registerForm.controls['password'].dirty && registerForm.controls['password'].invalid) {
+                  <div class="text-red-600">
+                    A senha deve conter pelo menos 8 caracteres, incluindo letras e números
+                  </div>
+                }
+              </div>
+            }
+            <button type="submit" class="w-full bg-primary-600 text-white py-3 rounded-lg font-medium" [disabled]="!registerForm.valid">
+              Cadastre-se grátis
+            </button>
+            @if (!isGoogleUser) {
+              <div class="mt-4">
+                <button (click)="registerWithGoogle()" class="w-full flex items-center justify-center bg-white border border-neutral-300 text-neutral-700 py-3 rounded-lg">
+                  <img src="assets/google-icon.webp" alt="Google Icon" class="h-7 w-7 mr-2"> Continuar com Google
+                </button>
+              </div>
+            }
+            <div class="mt-6 text-center text-neutral-700">
+              <p>Já tem uma conta? <a routerLink="/login" class="text-primary-700 font-semibold hover:underline">Faça login</a></p>
+            </div>
+          </form>
         </div>
+      }
 
-        <div class="mb-4">
-          <label for="phone" class="block text-neutral-700 font-medium mb-1">Telefone*</label>
-          <input type="tel" id="phone" [(ngModel)]="phone" name="phone" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="(00) 90000-0000" (input)="applyPhoneMask()" required minlength="11">
-          <div *ngIf="registerForm.controls['phone']?.dirty && registerForm.controls['phone']?.invalid" class="text-red-600">
-            Telefone inválido.
-          </div>
+      @if (registrationComplete) {
+        <div class="text-center mt-16">
+          <h2 class="text-3xl font-bold mb-6 text-neutral-900">Registro realizado com sucesso!</h2>
+          <p class="text-neutral-700 mb-6">{{ message }}</p>
+          <a routerLink="/login" class="text-primary-700 font-semibold hover:underline">Ir para a página de login</a>
         </div>
-
-        <div class="mb-4" *ngIf="!isGoogleUser">
-          <label for="password" class="block text-neutral-700 font-medium mb-1">Senha*</label>
-          <input type="password" id="password" [(ngModel)]="password" name="password" class="w-full p-3 border border-neutral-300 rounded-lg" placeholder="No mínimo 8 caracteres, letras e número" [disabled]="isGoogleUser" required minlength="8" pattern="^(?=.*[A-Za-z])(?=.*\d).+$">
-          <div *ngIf="registerForm.controls['password']?.dirty && registerForm.controls['password']?.invalid" class="text-red-600">
-            A senha deve conter pelo menos 8 caracteres, incluindo letras e números
-          </div>
-        </div>
-        <button type="submit" class="w-full bg-primary-600 text-white py-3 rounded-lg font-medium" [disabled]="!registerForm.valid">
-          Cadastre-se grátis
-        </button>
-
-        <div class="mt-4" *ngIf="!isGoogleUser">
-          <button (click)="registerWithGoogle()" class="w-full flex items-center justify-center bg-white border border-neutral-300 text-neutral-700 py-3 rounded-lg">
-            <img src="assets/google-icon.webp" alt="Google Icon" class="h-7 w-7 mr-2"> Continuar com Google
-          </button>
-        </div>
-
-        <div class="mt-6 text-center text-neutral-700">
-          <p>Já tem uma conta? <a routerLink="/login" class="text-primary-700 font-semibold hover:underline">Faça login</a></p>
-        </div>
-      </form>
+      }
     </div>
 
-    <div *ngIf="registrationComplete" class="text-center mt-16">
-      <h2 class="text-3xl font-bold mb-6 text-neutral-900">Registro realizado com sucesso!</h2>
-      <p class="text-neutral-700 mb-6">{{ message }}</p>
-      <a routerLink="/login" class="text-primary-700 font-semibold hover:underline">Ir para a página de login</a>
+    <div class="hidden md:block w-1/2 relative">
+      <img src="assets/register-image.webp" alt="Register Image" class="rounded-r-lg h-full w-full object-cover">
     </div>
   </div>
-
-  <div class="hidden md:block w-1/2 relative">
-    <img src="assets/register-image.webp" alt="Register Image" class="rounded-r-lg h-full w-full object-cover">
-  </div>
-</div>
 </div>
