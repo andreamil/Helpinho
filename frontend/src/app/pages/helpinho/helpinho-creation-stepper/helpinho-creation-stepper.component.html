@@ -1,51 +1,69 @@
 <div class="min-h-screen flex flex-col items-center py-8" style="background-color: #f9fafb; margin-top: -6rem;">
   <div class="flex justify-center items-center space-x-4 py-6 px-6 rounded-3xl border border-neutral-100 shadow-lg bg-transparent mt-20">
-    <div class="flex items-center space-x-4" *ngFor="let step of steps; let i = index">
-      <div class="relative flex items-center justify-center h-14 w-14 rounded-full transition-colors duration-200"
-           [ngClass]="{ 'bg-primary-500 text-white shadow-lg': i === currentStep, 'bg-neutral-50 text-gray-400': i !== currentStep }">
-        <img *ngIf="i !== currentStep" [src]="'assets/icons/' + step.icon + '-gray.svg'" alt="{{step.label}}" class="w-8 h-8">
-        <img *ngIf="i === currentStep" [src]="'assets/icons/' + step.icon + '-white.svg'" alt="{{step.label}}" class="w-8 h-8">
+    @for (step of steps; track step; let i = $index) {
+      <div class="flex items-center space-x-4">
+        <div class="relative flex items-center justify-center h-14 w-14 rounded-full transition-colors duration-200"
+          [ngClass]="{ 'bg-primary-500 text-white shadow-lg': i === currentStep, 'bg-neutral-50 text-gray-400': i !== currentStep }">
+          @if (i !== currentStep) {
+            <img [src]="'assets/icons/' + step.icon + '-gray.svg'" alt="{{step.label}}" class="w-8 h-8">
+          }
+          @if (i === currentStep) {
+            <img [src]="'assets/icons/' + step.icon + '-white.svg'" alt="{{step.label}}" class="w-8 h-8">
+          }
+        </div>
+        @if (i === currentStep) {
+          <div class="flex flex-col">
+            <span class="text-primary-500 font-bold text-sm leading-5">Passo {{ i + 1 }}/{{ steps.length }}</span>
+            <span class="text-neutral-800 font-normal text-lg leading-5">{{ step.label }}</span>
+          </div>
+        }
+        @if (i < steps.length - 1) {
+          <div class="w-0.5 h-10 bg-neutral-200"></div>
+        }
       </div>
-      <div *ngIf="i === currentStep" class="flex flex-col">
-        <span class="text-primary-500 font-bold text-sm leading-5">Passo {{ i + 1 }}/{{ steps.length }}</span>
-        <span class="text-neutral-800 font-normal text-lg leading-5">{{ step.label }}</span>
-      </div>
-      <div *ngIf="i < steps.length - 1" class="w-0.5 h-10 bg-neutral-200"></div>
-    </div>
+    }
   </div>
 
   <div class="bg-white w-full max-w-5xl mt-10 rounded-lg shadow-lg p-10">
-    <ng-container *ngIf="currentStep === 0">
+    @if (currentStep === 0) {
       <app-helpinho-step1-categoria [(category)]="helpinhoData.category" [showCategoryError]="showCategoryError"></app-helpinho-step1-categoria>
-    </ng-container>
-    <ng-container *ngIf="currentStep === 1">
+    }
+    @if (currentStep === 1) {
       <app-helpinho-step2-detalhes
         [(title)]="helpinhoData.title"
         [(description)]="helpinhoData.description"
         [(photoBase64)]="helpinhoData.photoBase64"
         (imageFileSelected)="onImageFileSelected($event)"
-        [showDetailsError]="showDetailsError"></app-helpinho-step2-detalhes>
-    </ng-container>
-    <ng-container *ngIf="currentStep === 2">
+      [showDetailsError]="showDetailsError"></app-helpinho-step2-detalhes>
+    }
+    @if (currentStep === 2) {
       <app-helpinho-step3-meta
         [(goal)]="helpinhoData.goal"
         [(customGoal)]="helpinhoData.customGoal"
         [(deadline)]="helpinhoData.deadline"
         [(bankInfo)]="helpinhoData.bankInfo"
         [showGoalError]="showGoalError"
-        [showDeadlineError]="showDeadlineError"></app-helpinho-step3-meta>
-    </ng-container>
-    <ng-container *ngIf="currentStep === 3">
+      [showDeadlineError]="showDeadlineError"></app-helpinho-step3-meta>
+    }
+    @if (currentStep === 3) {
       <app-helpinho-step4-revisao [helpinhoData]="helpinhoData"></app-helpinho-step4-revisao>
-    </ng-container>
+    }
   </div>
 
   <div class="flex justify-end space-x-4 items-center py-6 px-8 w-full max-w-5xl">
-    <button *ngIf="currentStep > 0" (click)="previousStep()" class="bg-white border border-neutral-300 text-neutral-700 font-semibold px-6 py-3 rounded-xl text-lg">Voltar</button>
-    <button *ngIf="currentStep < 3" (click)="nextStep()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg">Continuar</button>
-    <button *ngIf="currentStep === 3" (click)="publishHelpinho()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg flex items-center" [disabled]="isLoading">
-      Publicar Helpinho
-      <span *ngIf="isLoading" class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
-    </button>
+    @if (currentStep > 0) {
+      <button (click)="previousStep()" class="bg-white border border-neutral-300 text-neutral-700 font-semibold px-6 py-3 rounded-xl text-lg">Voltar</button>
+    }
+    @if (currentStep < 3) {
+      <button (click)="nextStep()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg">Continuar</button>
+    }
+    @if (currentStep === 3) {
+      <button (click)="publishHelpinho()" class="bg-primary-600 text-white px-6 py-3 rounded-xl text-lg flex items-center" [disabled]="isLoading">
+        Publicar Helpinho
+        @if (isLoading) {
+          <span class="ml-2 spinner-border spinner-border-sm inline-block" role="status" aria-hidden="true"></span>
+        }
+      </button>
+    }
   </div>
 </div>

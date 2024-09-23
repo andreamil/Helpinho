@@ -3,9 +3,11 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-pages',
   template: `
-    <app-header ></app-header>
+  <div style="display: block;min-width: 412px;">
+    <app-header></app-header>
     <router-outlet></router-outlet>
     <app-footer></app-footer>
+  <div>
   `,
   styles: [],
 })

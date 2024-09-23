@@ -1,46 +1,62 @@
 <header class="flex justify-between items-center py-4 px-8 bg-transparent w-full relative top-0 left-0 right-0 z-50">
-  <a routerLink="/" class="logo">
-    <img src="assets/helpinho-logo.webp" alt="Helpinho Logo" class="logo-desktop h-8 sm:h-10">
-    <img src="assets/helpinho-logo-small.webp" alt="Helpinho Logo Mobile" class="logo-mobile h-10 w-10 hidden">
+  <a routerLink="/" class="logo mr-4">
+    <img src="assets/helpinho-logo.webp" alt="Helpinho Logo" class="logo-desktop h-8 sm:h-10 object-scale-down">
+    <img src="assets/helpinho-logo-small.webp" alt="Helpinho Logo Mobile" class="logo-mobile h-14 w-14 hidden">
   </a>
 
-  <nav class="hidden sm:flex space-x-8">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="text-neutral-400 hover:text-primary-500 font-semibold text-lg relative">
-      <h1>Home</h1>
-      <span class="active-underline"></span>
-    </a>
-    <a routerLink="/pesquisa" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="text-neutral-400 hover:text-primary-500 font-semibold text-lg relative">
-      <h1>Pesquisa</h1>
-      <span class="active-underline"></span>
-    </a>
-    <a routerLink="/sobre" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="text-neutral-400 hover:text-primary-500 font-semibold text-lg relative">
-      <h1>Sobre</h1>
-      <span class="active-underline"></span>
-    </a>
+  <nav class="hidden md:flex space-x-8 with-underline">
+    <ng-container [ngTemplateOutlet]="navContent"/>
   </nav>
 
-  <div>
-    <div *ngIf="!isLoggedIn" class="flex space-x-4">
-      <button routerLink="/register" class="bg-primary-100 text-primary-500 text-md font-semibold px-5 py-2 rounded-xl shadow-md hover:bg-primary-200 transition duration-300">
-        Registre-se <span class="hidden lg:inline">grátis</span>
-      </button>
-      <button routerLink="/login" class="bg-primary-500 text-white text-md font-semibold px-5 py-2 rounded-xl shadow-md hover:bg-primary-700 transition duration-300">
-        Login
-      </button>
-    </div>
+  <div class="flex space-x-4 ml-auto md:ml-0">
+    <ng-container [ngTemplateOutlet]="isLoggedIn ? loggedInTemplate : notLoggedInTemplate"/>
+  </div>
 
-    <div *ngIf="isLoggedIn" class="flex items-center space-x-4">
-      <a routerLink="/me" class="flex items-center space-x-4 bg-primary-100/90 rounded-2xl px-4 py-2">
-        <img [src]="userAvatar" alt="User Avatar" class="h-10 w-10 rounded-full">
-        <div class="hidden sm:flex flex-col text-left">
-          <span class="text-gray-800 text-lg font-semibold">{{ userName }}</span>
-          <span class="text-gray-800 text-sm">{{ userEmail }}</span>
+  <button class="block md:hidden ml-4 md:ml-0 focus:outline-none" (click)="toggleMobileMenu()">
+    <img src="assets/icons/menu.svg" alt="Open Menu" class="w-8 h-8">
+  </button>
+
+  @if (isMobileMenuOpen) {
+    <div class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center space-y-6">
+      <button class="absolute top-8 right-8 focus:outline-none" (click)="toggleMobileMenu()">
+        <img src="assets/icons/x.svg" alt="Close Menu" class="w-8 h-8">
+      </button>
+      <nav class="flex flex-col space-y-4 text-center">
+        <ng-container [ngTemplateOutlet]="navContent"/>
+      </nav>
+      <ng-container [ngTemplateOutlet]="isLoggedIn ? loggedInTemplate : notLoggedInTemplate"/>
+    </div>
+  }
+  <ng-template #navContent>
+    @for (link of navLinks; track link) {
+      <a routerLink="{{ link.path }}" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()" class="text-neutral-400 hover:text-primary-500 font-semibold text-lg relative">
+        <h1>{{ link.label }}</h1>
+        <span class="active-underline"></span>
+      </a>
+    }
+  </ng-template>
+
+  <ng-template #notLoggedInTemplate>
+    <button routerLink="/register" (click)="closeMobileMenu()" class="bg-primary-100 text-primary-500 text-md font-semibold px-5 py-2 rounded-xl shadow-md hover:bg-primary-200 transition duration-300">
+      Registre-se <span class="hidden lg:inline">grátis</span>
+    </button>
+    <button routerLink="/login" (click)="closeMobileMenu()" class="bg-primary-500 text-white text-md font-semibold px-5 py-2 rounded-xl shadow-md hover:bg-primary-700 transition duration-300">
+      Login
+    </button>
+  </ng-template>
+
+  <ng-template #loggedInTemplate>
+    <div [ngClass]="isMobileMenuOpen ? 'flex flex-col gap-4 items-center' : 'flex items-center space-x-4'">
+      <a routerLink="/me" (click)="closeMobileMenu()" class="flex items-center space-x-4 bg-primary-100/30 rounded-2xl px-4 py-2">
+        <img [src]="userAvatar" alt="User Avatar" class="h-12 w-12 rounded-full">
+        <div [ngClass]="isMobileMenuOpen ? 'flex flex-col text-left' : 'hidden min-[500px]:flex flex-col text-left'">
+          <span class="text-neutral-700 text-lg font-semibold">{{ userName }}</span>
+          <span class="text-neutral-600 text-sm">{{ userEmail }}</span>
         </div>
       </a>
-
-      <button class="bg-pink-600 rounded-2xl hover:bg-pink-700 transition duration-300 p-2" (click)="logout()" style="padding: 12px;">
+      <button class="bg-primary-500 rounded-2xl hover:bg-pink-700 transition duration-300 p-4" (click)="logout()" [ngClass]="isMobileMenuOpen ? 'flex p-4' : 'hidden md:flex p-4'">
         <img src="assets/icons/log-out.svg" alt="Logout" class="w-8 h-8">
       </button>
     </div>
-  </div>
+  </ng-template>
 </header>

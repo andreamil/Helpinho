@@ -14,6 +14,13 @@ export class HeaderComponent implements OnInit {
   userEmail: string | null = null;
   userAvatar: string = 'assets/user-avatar.png';
   isGoogleLogin = false;
+  isMobileMenuOpen = false;
+
+  navLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'Pesquisa', path: '/pesquisa' },
+    { label: 'Sobre', path: '/sobre' }
+  ];
 
   constructor(private router: Router) { }
 
@@ -47,6 +54,7 @@ export class HeaderComponent implements OnInit {
 
       this.isLoggedIn = false;
       this.userName = null;
+      this.closeMobileMenu();
 
       if (!this.isGoogleLogin) {
         window.location.reload();
@@ -55,4 +63,13 @@ export class HeaderComponent implements OnInit {
       console.error('Error during logout', error);
     }
   }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
 }

@@ -11,6 +11,9 @@ export class HelpinhoCardComponent {
   helpinho!: Helpinho;
 
   @Input()
+  donorsLimit:number = 10;
+
+  @Input()
   isSmallCard: boolean = false;
   constructor(private router: Router) {}
 

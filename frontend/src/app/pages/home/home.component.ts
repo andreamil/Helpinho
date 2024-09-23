@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   isLoadingHelpinhos = false;
 
   searchTermChanged: Subject<string> = new Subject<string>();
+  donorsLimit: number = 5;
 
   constructor(private helpinhoService: HelpinhoService) {
     this.searchTermChanged.pipe(debounceTime(300)).subscribe((term) => {
@@ -88,12 +89,13 @@ export class HomeComponent implements OnInit {
     this.errorMessage = '';
 
     this.helpinhoService
-      .getHelpinhos(
-        this.limit,
-        this.lastEvaluatedKey,
-        this.searchTerm,
-        this.filters
-      )
+      .getHelpinhos({
+        limit: this.limit,
+        lastEvaluatedKey: this.lastEvaluatedKey,
+        searchTerm: this.searchTerm,
+        filters: this.filters,
+        donorsLimit: this.donorsLimit,
+      })
       .subscribe(
         (response: any) => {
           const data = response.items;

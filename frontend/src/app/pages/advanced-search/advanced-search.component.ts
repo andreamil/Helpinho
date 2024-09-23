@@ -28,6 +28,7 @@ export class AdvancedSearchComponent implements OnInit {
     'Animais', 'Assistência Social', 'Tecnologia', 'Arte e Cultura'
   ];
   showCustomCategoryInput = false;
+  donorsLimit: number = 0;
 
   onCategoryChange(event: any) {
     if (event.target.value === 'other') {

@@ -1,9 +1,3 @@
-
-
-'use strict';
-
-require('dotenv').config();
-
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'sa-east-1' });
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -192,7 +186,7 @@ module.exports.get = async (event) => {
 
     delete result.Item.bankInfo;
 
-    const { totalRaised, donors } = await calculateDonations(id);
+    const { receivedAmount, donors, donorsCount } = await calculateDonations(id);
     const creator = await fetchUserFromCognito(result.Item.userId);
 
     return {
@@ -203,8 +197,8 @@ module.exports.get = async (event) => {
       },
       body: JSON.stringify({
         ...result.Item,
-        totalRaised,
-        donorsCount: donors.length,
+        receivedAmount: receivedAmount ? receivedAmount : result.Item.receivedAmount,
+        donorsCount,
         donors,
         creator,
       }),
@@ -232,13 +226,12 @@ module.exports.list = async (event) => {
     goalMax,
     deadline,
     sort = 'createdAt_desc',
+    donorsLimit
   } = event.queryStringParameters || {};
 
   const params = {
     TableName: process.env.DYNAMODB_TABLE_HELPINHOS,
-    IndexName: 'DeletedIndex',
     Limit: parseInt(limit),
-    KeyConditionExpression: '#deleted = :deleted',
     ExpressionAttributeNames: {
       '#deleted': 'deleted',
     },
@@ -248,11 +241,38 @@ module.exports.list = async (event) => {
     ScanIndexForward: sort.endsWith('_asc'),
   };
 
+  let filterExpressions = [];
+  let keyConditionExpression = '#deleted = :deleted';
+
+  if (sort.startsWith('goal')) {
+    params.IndexName = 'GoalSortIndex';
+    params.ExpressionAttributeNames['#goal'] = 'goal';
+  
+    if (goalMin || goalMax) {
+      if (goalMin) params.ExpressionAttributeValues[':goalMin'] = parseInt(goalMin);
+      if (goalMax) params.ExpressionAttributeValues[':goalMax'] = parseInt(goalMax);
+  
+      if (goalMin && goalMax) {
+        keyConditionExpression += ' AND #goal BETWEEN :goalMin AND :goalMax';
+      } else {
+        keyConditionExpression += goalMin ? ' AND #goal >= :goalMin' : ' AND #goal <= :goalMax';
+      }
+    }
+  } else if (sort.startsWith('receivedAmount')) {
+    params.IndexName = 'ReceivedAmountSortIndex';
+    keyConditionExpression += ' AND #receivedAmount >= :receivedMin';
+    params.ExpressionAttributeNames['#receivedAmount'] = 'receivedAmount';
+    params.ExpressionAttributeValues[':receivedMin'] = 0;
+  } else {
+    params.IndexName = 'DeletedIndex';
+    keyConditionExpression += ' AND #createdAt >= :minCreatedAt';
+    params.ExpressionAttributeNames['#createdAt'] = 'createdAt';
+    params.ExpressionAttributeValues[':minCreatedAt'] = '0000-00-00T00:00:00Z';
+  }
+
   if (lastEvaluatedKey) {
     params.ExclusiveStartKey = JSON.parse(lastEvaluatedKey);
   }
-
-  let filterExpressions = [];
 
   if (category) {
     filterExpressions.push('#category = :category');
@@ -266,13 +286,13 @@ module.exports.list = async (event) => {
     params.ExpressionAttributeValues[':searchLower'] = search.toLowerCase();
   }
 
-  if (goalMin) {
+  if (goalMin && !sort.startsWith('goal')) {
     filterExpressions.push('#goal >= :goalMin');
     params.ExpressionAttributeNames['#goal'] = 'goal';
     params.ExpressionAttributeValues[':goalMin'] = parseInt(goalMin);
   }
 
-  if (goalMax) {
+  if (goalMax && !sort.startsWith('goal')) {
     filterExpressions.push('#goal <= :goalMax');
     params.ExpressionAttributeNames['#goal'] = 'goal';
     params.ExpressionAttributeValues[':goalMax'] = parseInt(goalMax);
@@ -288,21 +308,19 @@ module.exports.list = async (event) => {
     params.FilterExpression = filterExpressions.join(' AND ');
   }
 
-  if (sort.startsWith('goal')) {
-    params.IndexName = 'GoalSortIndex';
-  } else if (sort.startsWith('receivedAmount')) {
-    params.IndexName = 'ReceivedAmountSortIndex';
-  }
+  params.KeyConditionExpression = keyConditionExpression;
 
   try {
     const result = await dynamoDb.query(params).promise();
     const processedHelpinhos = [];
 
     for (let helpinho of result.Items) {
-      const { totalRaised, donors } = await calculateDonations(helpinho.id);
-      helpinho.totalRaised = totalRaised;
-      helpinho.donorsCount = donors.length;
-      helpinho.donors = donors;
+      if (donorsLimit === undefined || donorsLimit > 0){
+        const { receivedAmount, donors, donorsCount } = await calculateDonations(helpinho.id, donorsLimit);
+        helpinho.receivedAmount = receivedAmount;
+        helpinho.donorsCount = donorsCount;
+        helpinho.donors = donors;
+      }
 
       helpinho.creator = await fetchUserFromCognito(helpinho.userId);
       processedHelpinhos.push(helpinho);
@@ -333,6 +351,7 @@ module.exports.list = async (event) => {
     };
   }
 };
+
 
 module.exports.update = async (event) => {
   const { id } = event.pathParameters;
@@ -615,7 +634,7 @@ const fetchUserFromCognito = async (userId) => {
   }
 };
 
-const calculateDonations = async (helpinhoId) => {
+const calculateDonations = async (helpinhoId, fetchUsersLimit) => {
   const donationParams = {
     TableName: process.env.DYNAMODB_TABLE_HELPS,
     IndexName: 'HelpinhoIdIndex',
@@ -627,7 +646,7 @@ const calculateDonations = async (helpinhoId) => {
   const donationsResult = await dynamoDb.query(donationParams).promise();
   const donations = donationsResult.Items || [];
 
-  const totalRaised = donations.reduce((total, donation) => total + (donation.amount || 0), 0);
+  const receivedAmount = donations.reduce((total, donation) => total + (donation.amount || 0), 0);
   const donorsMap = new Map();
 
   for (const donation of donations) {
@@ -639,14 +658,16 @@ const calculateDonations = async (helpinhoId) => {
   }
 
   const donors = await Promise.all(
-    Array.from(donorsMap.keys()).map(async (userId) => {
-      const user = await fetchUserFromCognito(userId);
-      if (user) {
-        return { ...user, donationAmount: donorsMap.get(userId) };
-      }
-      return null;
-    })
+    Array.from(donorsMap.keys())
+      .slice(0, fetchUsersLimit !== undefined && fetchUsersLimit >= 0 ? fetchUsersLimit : donorsMap.size)
+      .map(async (userId) => {
+        const user = await fetchUserFromCognito(userId);
+        if (user) {
+          return { ...user, donationAmount: donorsMap.get(userId) };
+        }
+        return null;
+      })
   );
 
-  return { totalRaised, donors: donors.filter(Boolean) };
+  return { receivedAmount, donors: donors.filter(Boolean), donorsCount: donorsMap.size };
 };

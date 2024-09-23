@@ -6,7 +6,7 @@ nav a.active {
   @apply text-primary-500;
 }
 
-nav a .active-underline {
+nav.with-underline a .active-underline {
   content: '';
   position: absolute;
   bottom: -6px;
@@ -17,7 +17,7 @@ nav a .active-underline {
   @apply bg-primary-500;
 }
 
-nav a.active .active-underline {
+nav.with-underline a.active .active-underline {
   visibility: visible;
 }
 .logo-desktop {
@@ -46,4 +46,23 @@ nav a.active .active-underline {
   .logo-mobile {
     display: block;
   }
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 50;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-menu.open {
+  display: flex;
 }
