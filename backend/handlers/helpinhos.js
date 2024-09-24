@@ -134,6 +134,7 @@ module.exports.create = async (event) => {
           category: data.category,
           deadline: data.deadline,
           bankInfo: data.bankInfo,
+          isUrgent: data.isUrgent,
           createdAt: new Date().toISOString(),
           receivedAmount: 0,
           deleted: 0, 
@@ -380,6 +381,7 @@ module.exports.update = async (event) => {
     'category',
     'deadline',
     'bankInfo',
+    'isUrgent',
   ];
 
   let updateExpression = 'SET';
@@ -387,7 +389,7 @@ module.exports.update = async (event) => {
   let expressionAttributeValues = {};
 
   for (const field of allowedFields) {
-    if (data[field]) {
+    if (data[field] !== undefined) {
       updateExpression += ` #${field} = :${field},`;
       expressionAttributeNames[`#${field}`] = field;
       expressionAttributeValues[`:${field}`] = data[field];

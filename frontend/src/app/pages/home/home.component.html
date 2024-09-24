@@ -26,7 +26,7 @@
             Os helpinho podem parecer pequenos, mas juntos fazem a
             <span class="text-primary-500 font-bold">diferença na vida de todos</span>.
           </h2>
-          <button class="mt-8 bg-primary-500 text-white text-lg font-normal px-7 py-2 sm:py-4 rounded-2xl shadow-md hover:bg-primary-700 transition duration-300" routerLink="/register">
+          <button class="mt-8 bg-primary-500 text-white text-lg font-normal px-7 py-2 sm:py-4 rounded-2xl hover:bg-primary-700 transition duration-300" routerLink="/register">
             Registre-se grátis
           </button>
         </div>
@@ -51,28 +51,32 @@
             <h1 class="text-2xl text-neutral-600 mt-4">
               Vamos dar um <span class="text-primary-500 font-bold">helpinho</span> hoje? Separamos uma seleção especial para você.
             </h1>
-            <div class="mt-6 bg-pink-50 px-10 py-4 rounded-3xl inline-block">
-              <div class="flex flex-row space-y-0 space-x-8 text-lg">
+            <div class="mt-6 bg-white/40 px-9 py-6 rounded-3xl inline-block">
+              <div class="flex flex-row space-y-0 space-x-14 text-xl leading-6">
                 <div class="text-left">
-                  <p class="font-normal text-neutral-600">Acompanhando</p>
-                  <p class="font-normal text-neutral-600"><span class="text-2xl text-primary-500 font-bold">{{ trackingCount }}</span> helpinhos</p>
+                  <h1 class="font-normal text-neutral-600">Acompanhando</h1>
+                  <h1 class="font-normal text-neutral-600"><span class="text-3xl text-primary-500 font-bold">{{ trackingCount }}</span> helpinhos</h1>
                 </div>
-                <div class="text-left">
-                  <p class="font-normal text-neutral-600">Criou</p>
-                  <p class="font-normal text-neutral-600"><span class="text-2xl text-primary-500 font-bold">{{ createdCount }}</span> helpinhos</p>
+                <div class="text-left text-nowrap">
+                  <h1 class="font-normal text-neutral-600">Criou</h1>
+                  <h1 class="font-normal text-neutral-600"><span class="text-3xl text-primary-500 font-bold">{{ createdCount }}</span> helpinhos</h1>
                 </div>
               </div>
             </div>
           </div>
         }
         <div class="mt-8 md:mt-0">
-          <div class="relative w-64 h-64">
+          <div class="relative w-64">
             <img src="assets/donation-chart.webp" alt="Total Doado" class="">
-            <div class="absolute inset-0 flex flex-col justify-center items-center text-center">
-              <p class="text-sm text-neutral-700">Você já doou</p>
-              <p class="text-primary-500 text-4xl font-bold">{{ totalDonated | currency:'BRL' }}</p>
-              <p class="text-primary-500 text-4xl font-bold mt-10">{{ helpinhosAjudados }}</p>
-              <p class="text-sm text-neutral-700">Helpinhos ajudados</p>
+            <div class="absolute inset-0 flex flex-col gap-14 h-full justify-center items-center text-center">
+              <div >
+                <h3 class="text-lg font-light text-neutral-900">Você já doou</h3>
+                <h3 class="text-primary-600 flex gap-2 text-5xl font-bold items-end"><span class="text-lg font-normal mb-0.5">{{ (totalDonated | currency:'BRL')?.slice(0,2) }}</span>{{ (totalDonated | currency:'BRL')?.slice(2) }}</h3>
+              </div>
+              <div>
+                <h3 class="text-primary-600 text-5xl font-bold">{{ helpinhosAjudados }}</h3>
+                <h3 class="text-lg font-light text-neutral-900">Helpinhos alegres</h3>
+              </div>
             </div>
           </div>
         </div>
@@ -81,102 +85,101 @@
   </div>
 </div>
 
-<div class="container mx-auto mt-16 py-8 px-4 lg:px-12">
-  <section class="steps-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+<div class="container mx-auto mt-16 py-8 px-8 lg:px-24">
+  <section class="steps-section grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 text-left">
     <div class="step flex flex-row items-start space-x-4">
-      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">1.</span>
+      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none montserrat">1.</span>
       <div>
-        <p class="font-bold text-primary-900 text-lg">Escolha</p>
-        <p class="text-neutral-700 text-base">Escolha um helpinho que deseja ajudar</p>
+        <p class="font-bold text-primary-950 text-lg">Escolha</p>
+        <p class="text-neutral-400 text-base">Escolha um helpinho que deseja ajudar</p>
       </div>
     </div>
-    <div class="step flex flex-row items-start space-x-4">
-      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">2.</span>
+    <div class="step flex flex-row items-start space-x-4 ml-4 sm:ml-0">
+      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none montserrat">2.</span>
       <div>
-        <p class="font-bold text-primary-900 text-lg">Doe</p>
-        <p class="text-neutral-700 text-base">O valor é você quem decide, e ele vai <span class="text-primary-500 font-bold">todo</span> para quem escolher</p>
+        <p class="font-bold text-primary-950 text-lg">Doe</p>
+        <p class="text-neutral-400 text-base">O valor é você quem decide, e ele vai <span class="text-primary-500 font-bold">todo</span> para quem escolher</p>
       </div>
     </div>
-    <div class="step flex flex-row items-start space-x-4">
-      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">3.</span>
+    <div class="step flex flex-row items-start space-x-4 ml-8 sm:ml-0">
+      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none montserrat">3.</span>
       <div>
-        <p class="font-bold text-primary-900 text-lg">Aproveite</p>
-        <p class="text-neutral-700 text-base">Doar gera felicidade para você e para quem recebeu.</p>
+        <p class="font-bold text-primary-950 text-lg">Aproveite</p>
+        <p class="text-neutral-400 text-base">Doar gera felicidade para você e para quem recebeu.</p>
       </div>
     </div>
-    <div class="step flex flex-row items-start space-x-4">
-      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none">4.</span>
+    <div class="step flex flex-row items-start space-x-4 ml-12 sm:ml-0">
+      <span class="text-primary-500 font-bold text-4xl sm:text-6xl leading-none montserrat">4.</span>
       <div>
-        <p class="font-bold text-primary-900 text-lg">Acompanhe</p>
-        <p class="text-neutral-700 text-base">Fique ligado, acompanhe se o helpinho alcançou o objetivo</p>
+        <p class="font-bold text-primary-950 text-lg">Acompanhe</p>
+        <p class="text-neutral-400 text-base">Fique ligado, acompanhe se o helpinho alcançou o objetivo</p>
       </div>
     </div>
   </section>
 </div>
 
 <div class="container mx-auto px-4 py-8">
-  <div class="mt-12 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-
+  <div class="mt-12 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 md:px-10">
     <label class="search-label w-full h-full">
       <input
         type="text"
         placeholder="Quem vamos ajudar hoje?"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearch($event)"
-        class="w-full h-full p-5 pl-12 border border-neutral-300 rounded-lg shadow-md placeholder-neutral-500 search-input"
+        class="w-full h-full p-5 pl-12 border border-neutral-300 rounded-lg placeholder-neutral-500 search-input"
         />
-      </label>
-      <select (change)="onFilterChange($event)" class="category-select sm:ml-4 w-full h-full sm:w-auto p-5 pr-10 border border-neutral-300 rounded-lg shadow-md" [class.text-neutral-500]="!filters.category">
-        <option value="" class="text-neutral-500">Escolha uma categoria</option>
-        @for (category of categories; track category) {
-          <option [value]="category">{{ category }}</option>
-        }
-      </select>
-    </div>
-
-    <div infiniteScroll (scrolled)="onScroll()" class="helpinhos-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-      @if (!isLoadingHelpinhos || helpinhos.length > 0) {
-        @for (helpinho of helpinhos; track helpinho) {
-          <app-helpinho-card [helpinho]="helpinho" [donorsLimit]="donorsLimit"></app-helpinho-card>
-        }
+    </label>
+    <select (change)="onFilterChange($event)" class="category-select sm:ml-4 w-full h-full sm:w-auto p-5 pr-10 border border-neutral-300 rounded-lg" [class.text-neutral-500]="!filters.category">
+      <option value="" class="text-neutral-500">Escolha uma categoria</option>
+      @for (category of categories; track category) {
+        <option [value]="category">{{ category }}</option>
       }
-      @if (isLoadingHelpinhos) {
-        @for (skeleton of [1, 2, 3]; track skeleton) {
-          <div >
-            <div class="h-48 bg-neutral-300 rounded-t-xl w-full object-cover"></div>
-            <div class="relative rounded-xl shadow-lg bg-white p-6 animate-pulse" >
-              <div class="flex items-center space-x-3 my-4">
-                <div class="w-12 h-12 bg-neutral-300 rounded-full"></div>
-                <div class="space-y-2">
-                  <div class="h-4 bg-neutral-300 rounded w-24"></div>
-                  <div class="h-4 bg-neutral-200 rounded w-16"></div>
-                </div>
-              </div>
-              <div class="h-4 bg-neutral-300 rounded mb-2 w-3/4"></div>
-              <div class="h-3 bg-neutral-200 rounded mb-2 w-full"></div>
-              <div class="h-3 bg-neutral-200 rounded mb-2 w-5/6"></div>
-              <div class="mt-4">
-                <div class="relative pt-1">
-                  <div class="overflow-hidden h-3 mb-2 text-xs flex rounded bg-neutral-300">
-                    <div class="bg-neutral-400 w-1/3"></div>
-                  </div>
-                  <div class="flex justify-between text-sm text-neutral-400">
-                    <span>Recebido: --</span>
-                    <span>Meta: --</span>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-2 text-sm bg-neutral-200 h-4 w-2/3 rounded"></div>
-            </div>
-          </div>
-        }
-      }
-    </div>
-
-    @if (!hasMore && !isLoadingHelpinhos) {
-      <div class="text-center my-8">
-        <p class="text-neutral-700">Não há mais helpinhos para carregar.</p>
-      </div>
-    }
-
+    </select>
   </div>
+
+  <div infiniteScroll (scrolled)="onScroll()" class="helpinhos-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+    @if (!isLoadingHelpinhos || helpinhos.length > 0) {
+      @for (helpinho of helpinhos; track helpinho) {
+        <app-helpinho-card [helpinho]="helpinho" [donorsLimit]="donorsLimit"></app-helpinho-card>
+      }
+    }
+    @if (isLoadingHelpinhos) {
+      @for (skeleton of [1, 2, 3]; track skeleton) {
+        <div >
+          <div class="h-48 bg-neutral-300 rounded-t-xl w-full object-cover"></div>
+          <div class="relative rounded-3xl shadow-lg bg-white p-6 animate-pulse" >
+            <div class="flex items-center space-x-3 my-4">
+              <div class="w-12 h-12 bg-neutral-300 rounded-full"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-neutral-300 rounded w-24"></div>
+                <div class="h-4 bg-neutral-200 rounded w-16"></div>
+              </div>
+            </div>
+            <div class="h-4 bg-neutral-300 rounded mb-2 w-3/4"></div>
+            <div class="h-3 bg-neutral-200 rounded mb-2 w-full"></div>
+            <div class="h-3 bg-neutral-200 rounded mb-2 w-5/6"></div>
+            <div class="mt-4">
+              <div class="relative pt-1">
+                <div class="overflow-hidden h-3 mb-2 text-xs flex rounded bg-neutral-300">
+                  <div class="bg-neutral-400 w-1/3"></div>
+                </div>
+                <div class="flex justify-between text-sm text-neutral-400">
+                  <span>Recebido: --</span>
+                  <span>Meta: --</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-2 text-sm bg-neutral-200 h-4 w-2/3 rounded"></div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  @if (!hasMore && !isLoadingHelpinhos) {
+    <div class="text-center my-8">
+      <p class="text-neutral-700">Não há mais helpinhos para carregar.</p>
+    </div>
+  }
+
+</div>

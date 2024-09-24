@@ -34,6 +34,7 @@
         [(description)]="helpinhoData.description"
         [(photoBase64)]="helpinhoData.photoBase64"
         (imageFileSelected)="onImageFileSelected($event)"
+        [(isUrgent)]="helpinhoData.isUrgent"
       [showDetailsError]="showDetailsError"></app-helpinho-step2-detalhes>
     }
     @if (currentStep === 2) {

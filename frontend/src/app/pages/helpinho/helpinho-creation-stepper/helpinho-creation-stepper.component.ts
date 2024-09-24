@@ -23,6 +23,7 @@ export class HelpinhoCreationStepperComponent {
     category: '',
     title: '',
     description: '',
+    isUrgent: false,
     goal: 0,
     customGoal: null as number | null,
     deadline: null as string | null,

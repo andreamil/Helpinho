@@ -152,6 +152,26 @@
             }
           </div>
         </div>
+
+        <div class="mt-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Urgência</h2>
+          @if (editMode) {
+            <div class="mt-4">
+              <label class="text-gray-700">Este helpinho é urgente?</label>
+              <input
+                type="checkbox"
+                [(ngModel)]="helpinho.isUrgent"
+                class="ml-2 w-6 h-6 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              />
+            </div>
+          }
+          @if (!editMode) {
+            <p class="text-gray-800">
+              Urgência: <strong>{{ helpinho.isUrgent ? 'Sim' : 'Não' }}</strong>
+            </p>
+          }
+        </div>
+
         @if (editMode) {
           <div class="mt-8 flex justify-end">
             <button

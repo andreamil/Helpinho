@@ -1,9 +1,5 @@
-
-<a [routerLink]="['/helpinho', helpinho.id]" >
-  <div
-    class="relative rounded-xl shadow-lg overflow-hidden cursor-pointer"
-    [ngClass]="{ 'bg-white': !helpinho.isUrgent }"
-    >
+<a [routerLink]="['/helpinho', helpinho.id]">
+  <div class="relative rounded-3xl shadow-lg overflow-hidden cursor-pointer flex flex-col h-full">
     @if (!helpinho.isUrgent) {
       <div class="relative">
         <img [src]="helpinho.photo" alt="Helpinho Image" class="w-full h-48 object-cover rounded-t-xl" />
@@ -13,73 +9,79 @@
       </div>
     }
 
-    @if (helpinho.isUrgent) {
-      <div class="relative">
-        <img [src]="helpinho.photo" alt="Helpinho Image" class="absolute inset-0 w-full h-full object-cover z-0" />
-        <div
-          class="absolute inset-0 bg-cover bg-center z-10"
-          style="background-image: url('assets/home-bg-1.webp'); opacity: 0.7;"
-        ></div>
-      </div>
-    }
+    <div class="relative z-20 flex flex-col flex-grow p-8" [ngClass]="{ 'pt-12 text-white': helpinho.isUrgent, 'bg-white': !helpinho.isUrgent }">
+      @if (helpinho.isUrgent) {
+        <span class="absolute top-12 right-8 bg-pink-100 text-primary-500 px-3 py-1 rounded-full text-sm font-semibold z-10">
+          {{ helpinho.category }}
+        </span>
+        <img [src]="helpinho.photo" alt="Helpinho Image" class="absolute inset-0 w-full h-full object-cover z-0" style="opacity: 0.7;" />
+        <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: linear-gradient(180deg, rgba(255, 200, 214, 0.6) 0%, rgba(147, 8, 67, 0.6) 100%), url(assets/texture.svg);background-size: auto;"></div>
+      }
 
-    <div class="p-6 relative z-20" [ngClass]="{ 'text-white': helpinho.isUrgent, 'bg-white': !helpinho.isUrgent }">
-      <div class="flex items-center space-x-3 mb-4">
-        <img [src]="helpinho.creator.photo" alt="Creator Photo" class="w-12 h-12 rounded-full" />
-        <div>
-          <p class="font-semibold text-lg" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-900': !helpinho.isUrgent }">
-            {{ helpinho.creator.name }}
-          </p>
-          <p class="text-sm" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-neutral-700': !helpinho.isUrgent }">
-            {{ helpinho.creator.email }}
-          </p>
+      <span class="flex flex-col gap-4 flex-grow">
+        <div class="flex items-center space-x-3 relative">
+          <img [src]="helpinho.creator.photo" alt="Creator Photo" class="w-12 h-12 rounded-full" />
+          <div>
+            <p class="font-semibold text-lg" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-neutral-700': !helpinho.isUrgent }">
+              {{ helpinho.creator.name }}
+            </p>
+            <p class="text-sm" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-neutral-600': !helpinho.isUrgent }">
+              {{ helpinho.creator.email }}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <h2 class="text-xl font-bold mb-2" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-gray-900': !helpinho.isUrgent }">
-        {{ helpinho.title }}
-      </h2>
+        <p class="text-2xl relative" [ngClass]="{ 'font-medium text-white': helpinho.isUrgent, 'font-semibold text-neutral-900': !helpinho.isUrgent }">
+          {{ helpinho.title }}
+        </p>
 
-      <p class="mb-4" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-neutral-700': !helpinho.isUrgent }">
-        {{ helpinho.description | slice: 0:100 }}...
-      </p>
+        <p class="relative flex-grow font-light" [ngClass]="{ 'text-white': helpinho.isUrgent, 'text-neutral-600': !helpinho.isUrgent }">
+          {{ helpinho.description | slice: 0:helpinho.isUrgent?500:100 }}...
+        </p>
 
-      <div class="mt-4">
-        <div class="relative pt-1">
-          <div class="overflow-hidden h-3 mb-2 text-xs flex rounded bg-gray-300">
-            <div
-              class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-600"
-              [style.width]="(helpinho.receivedAmount / helpinho.goal) * 100 + '%'">
+        <div class="mt-auto">
+          <div class="relative pt-1">
+            <div class="overflow-hidden h-3 mb-2 text-xs flex rounded bg-neutral-50">
+              <div class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-600"
+                   [style.width]="(helpinho.receivedAmount / helpinho.goal) * 100 + '%'">
+              </div>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Recebido: <strong>{{ helpinho.receivedAmount | currency:'BRL':'symbol' }}</strong></span>
+              <span>Meta: <strong>{{ helpinho.goal | currency:'BRL':'symbol' }}</strong></span>
             </div>
           </div>
-          <div class="flex justify-between text-sm">
-            <span>Recebido: <strong>{{ helpinho.receivedAmount | currency:'BRL':'symbol' }}</strong></span>
-            <span>Meta: <strong>{{ helpinho.goal | currency:'BRL':'symbol' }}</strong></span>
-          </div>
         </div>
-      </div>
+      </span>
 
-      <div class="mt-2 text-sm">
-        <p>
-          Prazo: <strong>{{ helpinho.deadline | date: 'dd/MM/yyyy' }}</strong>
-        </p>
-      </div>
+      @if (helpinho.isUrgent) {
+        <div class="bg-[#FF263766]/40 text-neutral-50 font-medium py-2 px-4 rounded-lg mb-4 relative leading-6 mt-4">
+          Helpinho urgente validado pela nossa equipe
+        </div>
+      }
+      @else {
+        <div class="mt-2 text-sm relative">
+          <p>Prazo: <strong>{{ helpinho.deadline | date: 'dd/MM/yyyy' }}</strong></p>
+        </div>
+      }
 
-      @if (helpinho.donors.length > 0) {
-        <div class="flex items-center mt-4 ml-2" [ngClass]="{ 'hidden sm:flex': isSmallCard }">
+      @if (donorsLimit != 0 && helpinho.donors.length > 0) {
+        <div class="flex items-center mt-4 ml-2 relative" [ngClass]="{ 'hidden sm:flex': isSmallCard }">
           @for (donor of helpinho.donors | slice:0:donorsLimit; track donor) {
             <img [src]="donor.photo" alt="Donor Photo" class="w-10 h-10 rounded-full border-2 border-white -ml-2" />
           }
           @if (helpinho.donorsCount > donorsLimit) {
-            <span class="text-sm font-semibold ml-2" [ngClass]="{ 'text-gray-200': helpinho.isUrgent, 'text-gray-500': !helpinho.isUrgent }">
+            <span
+              class="w-10 h-10 rounded-full border-2 border-white -ml-2 flex items-center justify-center bg-primary-50 text-sm text-primary-500 font-medium">
               +{{ helpinho.donorsCount - donorsLimit }}
             </span>
           }
         </div>
+
       }
 
       @if (isSmallCard && helpinho.donors.length > 0) {
-        <div class="mt-4 text-primary-500 font-semibold">
+        <div class="mt-4 text-primary-500 font-semibold relative">
           {{ helpinho.donors.length }} apoiam esse helpinho
         </div>
       }

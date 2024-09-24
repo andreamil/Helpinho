@@ -10,10 +10,12 @@ export class HelpinhoStep2DetalhesComponent {
   @Input() description: string = '';
   @Input() showDetailsError: boolean = false;
   @Input() photoBase64: any = null;
+  @Input() isUrgent: boolean = false;
   @Output() titleChange = new EventEmitter<string>();
   @Output() descriptionChange = new EventEmitter<string>();
   @Output() imageFileSelected = new EventEmitter<File>();
   @Output() photoBase64Change = new EventEmitter<File>();
+  @Output() isUrgentChange = new EventEmitter<boolean>();
 
   selectedFile: File | null = null;
 
@@ -25,6 +27,11 @@ export class HelpinhoStep2DetalhesComponent {
   onDescriptionChange(newDescription: string) {
     this.description = newDescription;
     this.descriptionChange.emit(this.description);
+  }
+
+  onUrgentChange(isUrgent: boolean) {
+    this.isUrgent = isUrgent;
+    this.isUrgentChange.emit(this.isUrgent);
   }
 
   onFileSelected(event: any) {
@@ -41,7 +48,6 @@ export class HelpinhoStep2DetalhesComponent {
     }
 
     this.imageFileSelected.emit(this.selectedFile);
-
   }
 
   isValid(): boolean {

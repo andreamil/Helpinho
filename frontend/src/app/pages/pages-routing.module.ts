@@ -10,6 +10,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { HelpinhoCreationStepperComponent } from './helpinho/helpinho-creation-stepper/helpinho-creation-stepper.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AdvancedSearchComponent } from './advanced-search/advanced-search.component';
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,7 @@ const routes: Routes = [
         component: FollowedHelpinhosComponent,
         canActivate: [AuthGuard],
       },
+      { path: 'sobre', component: AboutComponent },
     ],
   },
 ];
